@@ -1,0 +1,11 @@
+{
+    "inputs": [
+        {
+            "inputFile": "./openapi/paths/header.yaml"
+        },
+        {
+            "inputFile": "./openapi/paths/rdi-account-api.yaml"
+        }
+    ],
+    "output": "./openapi/openapi.yaml"
+}

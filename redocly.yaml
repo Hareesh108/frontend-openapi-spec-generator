@@ -1,0 +1,63 @@
+# See https://redocly.com/docs/cli/configuration/ for more information.
+apis:
+  sample@v1:
+    root: openapi/openapi.yaml
+extends:
+  - recommended
+rules:
+  no-unused-components: error
+  no-server-example.com: off
+theme:
+  openapi:
+    htmlTemplate: ./docs/index.html
+    theme:
+      codeBlock:
+        borderRadius: "8"
+      sidebar:
+        width: "300px"
+        textColor: "#000000"
+        backgroundColor: "#ffffff"
+      rightPanel:
+        backgroundColor: "rgba(55, 53, 71, 1)"
+        textColor: "#ffffff"
+      typography:
+        fontSize: "14px"
+        fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+        optimizeSpeed: true
+        smoothing: "antialiased"
+        headings:
+          fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+          fontWeight: "bold"
+          lineHeight: "2em"
+        links:
+          color: "rgba(246, 20, 63, 1)"
+          visited: "rgba(246, 20, 63, 1)"
+          hover: "#fa768f"
+        code:
+          fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+          color: "rgba(92, 62, 189, 1)"
+          wrap: true
+      colors:
+        primary:
+          main: "rgba(246, 20, 63, 1)"
+          light: "rgba(246, 20, 63, 0.42)"
+        success:
+          main: "rgba(28, 184, 65, 1)"
+          light: "#81ec9a"
+          dark: "#083312"
+          contrastText: "#000"
+        text:
+          primary: "rgba(0, 0, 0, 1)"
+          secondary: "#4d4d4d"
+        http:
+          get: "rgba(0, 200, 219, 1)"
+          post: "rgba(28, 184, 65, 1)"
+          put: "rgba(255, 187, 0, 1)"
+          delete: "rgba(254, 39, 35, 1)"
+    generateCodeSamples:
+      languages: # Array of language config objects; indicates in which languages to generate code samples.
+        - lang: curl
+        - lang: Node.js
+        - lang: JavaScript
+        - lang: PHP
+        - lang: Python
