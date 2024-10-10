@@ -4,7 +4,7 @@ info:
   description: API for managing organizations.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/
+  - url: https://api.rdi.io
 paths:
   /v1/organizations:
     post:

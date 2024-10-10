@@ -10,6 +10,7 @@
     "start": "redocly preview-docs",
     "build": "redocly bundle -o dist/bundle.yaml",
     "test": "redocly lint",
-    "merge": "npm exec openapi-merge-cli -o openapi/openapi.yaml"
+    "merge": "npm exec openapi-merge-cli -o openapi/openapi.yaml",
+    "build-docs": "redocly build-docs openapi/openapi.yaml --output=rdi-openapi.html"
   }
 }

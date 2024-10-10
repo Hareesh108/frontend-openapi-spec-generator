@@ -19,7 +19,7 @@ info:
     backgroundColor: '#ee0979'
     altText: Reldyn
 servers:
-  - url: 'http://localhost:8080/'
+  - url: 'https://api.rdi.io'
 tags:
   - name: Organizations
     description: The API allows you to view and manage the organizations.
