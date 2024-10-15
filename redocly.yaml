@@ -22,11 +22,11 @@ theme:
         textColor: "#ffffff"
       typography:
         fontSize: "14px"
-        fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+        fontFamily: "Inter, Roboto, sans-serif"
         optimizeSpeed: true
         smoothing: "antialiased"
         headings:
-          fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+          fontFamily: "Inter, Roboto, sans-serif"
           fontWeight: "bold"
           lineHeight: "2em"
         links:
@@ -34,7 +34,7 @@ theme:
           visited: "rgba(246, 20, 63, 1)"
           hover: "#fa768f"
         code:
-          fontFamily: "Jetbrains Mono, Roboto, sans-serif"
+          fontFamily: "Inter, Roboto, sans-serif"
           color: "rgba(92, 62, 189, 1)"
           wrap: true
       colors:

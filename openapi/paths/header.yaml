@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: RDI Platform OpenAPI
+  title: RDI Portal API
   contact:
     name: Contact our support
     email: hello@reldyn.co
@@ -9,7 +9,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: >
-    Included below are the API Endpoints available within the Reldyn Identity (RDI) Platform API. <br><br>
+    Included below are the API Endpoints available within the Reldyn Identity (RDI) Portal API. <br><br>
     There are many OpenAPI Tools available for you to work directly with the OpenAPI Specification, if desired. For instance, you may leverage code generation tools to generate client libraries in any one of the support languages and frameworks.
   x-logo:
     url: "https://reldyn.co/assets/images/logo.svg"

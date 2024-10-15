@@ -7,5 +7,5 @@
             "inputFile": "./openapi/paths/rdi-account-api.yaml"
         }
     ],
-    "output": "./openapi/openapi.yaml"
+    "output": "./openapi/rdi-portal-api.yaml"
 }
