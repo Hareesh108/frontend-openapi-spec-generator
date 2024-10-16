@@ -62,4 +62,4 @@ jobs:
       if: steps.changes.outputs.verificationapi == 'true'
       run: |
         npm run build-docs -- openapi/rdi-verification-api.yaml --output=rdi-verification-api.html
-        aws s3 cp rdi-portal-api.html s3://rdi-openapi
+        aws s3 cp rdi-verification-api.html s3://rdi-openapi
