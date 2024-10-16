@@ -13,7 +13,7 @@ info:
     (RDI) Portal API. <br><br> There are many OpenAPI Tools available for you to
     work directly with the OpenAPI Specification, if desired. For instance, you
     may leverage code generation tools to generate client libraries in any one
-    of the support languages and frameworks.
+    of the support languages and frameworks. 
   x-logo:
     url: 'https://reldyn.co/assets/images/logo.svg'
     backgroundColor: '#ee0979'
