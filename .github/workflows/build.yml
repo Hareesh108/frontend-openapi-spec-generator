@@ -1,0 +1,60 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "dev" ]
+
+env:
+  AWS_REGION: ap-south-1
+  AWS_INSTANCE_SG_ID: sg-0330fd18f686f7042
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read  
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.18.0]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with: 
+        role-to-assume: arn:aws:iam::390368574241:role/GitHubAction-AssumeRoleWithAction
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ env.AWS_REGION }}
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          portalapi:
+            - 'openapi/rdi-portal-api.yaml'
+          verificationapi:
+            - 'openapi/rdi-verification-api.yaml'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+
+    - name: portalapi deploy
+      if: steps.changes.outputs.portalapi == 'true'
+      run: |
+        redocly build-docs openapi/rdi-portal-api.yaml --output=rdi-portal-api.html
+        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
+
+    - name: portalapi deploy
+      if: steps.changes.outputs.verificationapi == 'true'
+      run: |
+        redocly build-docs openapi/rdi-verification-api.yaml --output=rdi-verification-api.html
+        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
