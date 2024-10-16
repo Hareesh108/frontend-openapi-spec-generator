@@ -7,7 +7,7 @@ info:
 
     ## Base URL
     ```
-    https://TENANT_NAME.reldynidentity.com/api
+    https://TENANT_NAME.reldyn.dev/api
     ```
     Replace `TENANT_NAME` with your tenant name from the Identity Platform Dashboard tenant URL.
 
@@ -28,7 +28,7 @@ info:
     backgroundColor: "#ee0979"
     altText: Reldyn
 servers:
-  - url: https://{tenant_name}.reldynidentity.com/api
+  - url: https://{tenant_name}.reldyn.dev/api
     description: API server
     variables:
       tenant_name:
