@@ -29,6 +29,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: changes
       with:
+        base: "dev"
         filters: |
           portalapi:
             - 'openapi/rdi-portal-api.yaml'
