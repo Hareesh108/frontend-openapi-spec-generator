@@ -25,6 +25,7 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v2
       id: changes
       with:
@@ -41,8 +42,6 @@ jobs:
         role-to-assume: arn:aws:iam::390368574241:role/GitHubAction-AssumeRoleWithAction
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ env.AWS_REGION }}
-    - uses: actions/checkout@v4
-      if: steps.changes.outputs.verificationapi == 'true' || steps.changes.outputs.portalapi == 'true'
     - name: Use Node.js ${{ matrix.node-version }}
       if: steps.changes.outputs.verificationapi == 'true' || steps.changes.outputs.portalapi == 'true'
       uses: actions/setup-node@v4
