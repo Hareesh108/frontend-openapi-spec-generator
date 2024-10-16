@@ -7,7 +7,7 @@ info:
     email: hello@reldyn.co
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
   description: >
     Included below are the API Endpoints available within the Reldyn Identity
     (RDI) Portal API. <br><br> There are many OpenAPI Tools available for you to
@@ -15,11 +15,11 @@ info:
     may leverage code generation tools to generate client libraries in any one
     of the support languages and frameworks.
   x-logo:
-    url: 'https://reldyn.co/assets/images/logo.svg'
-    backgroundColor: '#ee0979'
+    url: "https://reldyn.co/assets/images/logo.svg"
+    backgroundColor: "#ee0979"
     altText: Reldyn
 servers:
-  - url: 'https://api.rdi.io'
+  - url: "https://rdi.reldyn.dev"
 tags:
   - name: Organizations
     description: The API allows you to view and manage the organizations.
@@ -53,7 +53,7 @@ paths:
                 org_contact_no:
                   type: string
                   description: Contact phone number for the organization
-                  example: '+601234567890'
+                  example: "+601234567890"
                 org_contact_name:
                   type: string
                   description: Contact name for the organization
@@ -80,24 +80,24 @@ paths:
                       - ONFIDO
                       - JUMIO
       responses:
-        '201':
+        "201":
           description: Organization created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationDto'
-        '400':
+                $ref: "#/components/schemas/OrganizationDto"
+        "400":
           description: Invalid request parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
     get:
       summary: Retrieve a list of organizations
       description: Retrieves a list of all organizations.
@@ -128,22 +128,22 @@ paths:
             type: array
             items:
               type: string
-              example: 'org_name,desc'
-          description: 'Sort by properties, e.g. `status,desc` or `id,asc`'
+              example: "org_name,desc"
+          description: "Sort by properties, e.g. `status,desc` or `id,asc`"
       responses:
-        '200':
+        "200":
           description: A list of organizations with pagination details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationsPaginatedResponse'
-        '500':
+                $ref: "#/components/schemas/OrganizationsPaginatedResponse"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-  '/v1/organizations/{organizationId}':
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  "/v1/organizations/{organizationId}":
     get:
       summary: Retrieve a single organization
       description: Retrieves details of a single organization by its ID.
@@ -159,18 +159,18 @@ paths:
           description: Unique identifier for the organization
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
       responses:
-        '200':
+        "200":
           description: Organization details retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationDto'
-        '500':
+                $ref: "#/components/schemas/OrganizationDto"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
     put:
       summary: Update an organization
       description: Updates details of an existing organization.
@@ -203,7 +203,7 @@ paths:
                   example: 1234567890
                 org_status:
                   type: string
-                  description: 'Status of the organization (e.g., active, inactive)'
+                  description: "Status of the organization (e.g., active, inactive)"
                   enum:
                     - ACTIVE
                     - INACTIVE
@@ -211,7 +211,7 @@ paths:
                 org_contact_no:
                   type: string
                   description: Contact phone number for the organization
-                  example: '+601234567890'
+                  example: "+601234567890"
                 org_contact_name:
                   type: string
                   description: Contact name for the organization
@@ -230,26 +230,26 @@ paths:
                 org_logo_url:
                   type: string
                   description: Logo url for the organization
-                  example: 'https://s3.ap-south-1.amazonaws.com/logo.jpg'
+                  example: "https://s3.ap-south-1.amazonaws.com/logo.jpg"
       responses:
-        '200':
+        "200":
           description: Organization updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationDto'
-        '400':
+                $ref: "#/components/schemas/OrganizationDto"
+        "400":
           description: Invalid request parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
     delete:
       summary: Delete an organization
       description: Deletes an existing organization account by id.
@@ -265,15 +265,15 @@ paths:
           description: Unique identifier for the organization
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
       responses:
-        '204':
+        "204":
           description: Organization deleted successfully
-        '500':
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-  '/v1/organizations/{organizationId}/apps':
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  "/v1/organizations/{organizationId}/apps":
     post:
       summary: Install the apps
       description: Install the apps.
@@ -309,26 +309,26 @@ paths:
                       - ONFIDO
                       - JUMIO
       responses:
-        '201':
+        "201":
           description: App installed successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrgAppDto'
-        '400':
+                  $ref: "#/components/schemas/OrgAppDto"
+        "400":
           description: Invalid request parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
 components:
   schemas:
     OrganizationDto:
@@ -341,7 +341,7 @@ components:
         created_at:
           type: string
           format: date-time
-          example: '2021-02-01T12:34:56Z'
+          example: "2021-02-01T12:34:56Z"
         created_by:
           type: string
           description: Name of the user that created this organization
@@ -349,7 +349,7 @@ components:
         updated_at:
           type: string
           format: date-time
-          example: '2021-02-01T12:34:56Z'
+          example: "2021-02-01T12:34:56Z"
         updated_by:
           type: string
           description: Name of the user that last updated this organization
@@ -364,7 +364,7 @@ components:
           example: 1234567890
         org_status:
           type: string
-          description: 'Status of the organization (e.g., active, inactive)'
+          description: "Status of the organization (e.g., active, inactive)"
           enum:
             - ACTIVE
             - INACTIVE
@@ -378,7 +378,7 @@ components:
         org_contact_no:
           type: string
           description: Contact phone number for the organization
-          example: '+601234567890'
+          example: "+601234567890"
         org_contact_name:
           type: string
           description: Contact name for the organization
@@ -397,11 +397,11 @@ components:
         org_logo_url:
           type: string
           description: Logo url for the organization
-          example: 'https://s3.ap-south-1.amazonaws.com/logo.jpg'
+          example: "https://s3.ap-south-1.amazonaws.com/logo.jpg"
         apps:
           type: array
           items:
-            $ref: '#/components/schemas/OrgAppDto'
+            $ref: "#/components/schemas/OrgAppDto"
     OrgAppDto:
       type: object
       properties:
@@ -412,7 +412,7 @@ components:
         created_at:
           type: string
           format: date-time
-          example: '2021-02-01T12:34:56Z'
+          example: "2021-02-01T12:34:56Z"
         created_by:
           type: string
           description: Name of the user that created this organization
@@ -420,7 +420,7 @@ components:
         updated_at:
           type: string
           format: date-time
-          example: '2021-02-01T12:34:56Z'
+          example: "2021-02-01T12:34:56Z"
         updated_by:
           type: string
           description: Name of the user that last updated this organization
@@ -455,7 +455,7 @@ components:
         timestamp:
           type: string
           description: Timestamp of the error occurred
-          example: '2024-10-07T16:51:24.595+08:00'
+          example: "2024-10-07T16:51:24.595+08:00"
         status:
           type: integer
           description: Error code indicating the issue
@@ -472,7 +472,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationDto'
+            $ref: "#/components/schemas/OrganizationDto"
         number:
           type: integer
           example: 0

@@ -1,5 +1,19 @@
 # OpenAPI Definition Starter
 
+## Note for developers
+
+### Portal API
+
+1. Create/update the microservice's OpenAPI spec into `/openapi/paths`
+2. Update the `header.yaml` whenever necessary
+3. Run `npm merge` to merge all the files into `rdi-portal-api.yaml`
+4. Raise a PR to `dev`
+
+### Verification API
+
+1. Update the `rdi-verification-api.yaml` to `/openapi`
+2. Raise a PR to dev
+
 ## Working on your OpenAPI Definition
 
 ### Install

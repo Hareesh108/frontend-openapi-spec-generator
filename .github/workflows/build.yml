@@ -25,36 +25,42 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with: 
-        role-to-assume: arn:aws:iam::390368574241:role/GitHubAction-AssumeRoleWithAction
-        role-session-name: GitHub_to_AWS_via_FederatedOIDC
-        aws-region: ${{ env.AWS_REGION }}
     - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v2
       id: changes
       with:
+        base: "dev"
         filters: |
           portalapi:
             - 'openapi/rdi-portal-api.yaml'
           verificationapi:
             - 'openapi/rdi-verification-api.yaml'
+    
+    - name: Configure AWS Credentials
+      if: steps.changes.outputs.verificationapi == 'true' || steps.changes.outputs.portalapi == 'true'
+      uses: aws-actions/configure-aws-credentials@v4
+      with: 
+        role-to-assume: arn:aws:iam::390368574241:role/GitHubAction-AssumeRoleWithAction
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ env.AWS_REGION }}
     - name: Use Node.js ${{ matrix.node-version }}
+      if: steps.changes.outputs.verificationapi == 'true' || steps.changes.outputs.portalapi == 'true'
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - name: Install libraries 
+      if: steps.changes.outputs.verificationapi == 'true' || steps.changes.outputs.portalapi == 'true'
+      run: npm ci
 
-    - name: portalapi deploy
+    - name: Deploy rdi-portal-api.html
       if: steps.changes.outputs.portalapi == 'true'
       run: |
-        redocly build-docs openapi/rdi-portal-api.yaml --output=rdi-portal-api.html
-        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
+        npm run build-docs -- openapi/rdi-portal-api.yaml --output=rdi-portal-api.html
+        aws s3 cp rdi-portal-api.html s3://rdi-openapi
 
-    - name: portalapi deploy
+    - name: Deploy rdi-verification-api.html
       if: steps.changes.outputs.verificationapi == 'true'
       run: |
-        redocly build-docs openapi/rdi-verification-api.yaml --output=rdi-verification-api.html
-        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
+        npm run build-docs -- openapi/rdi-verification-api.yaml --output=rdi-verification-api.html
+        aws s3 cp rdi-verification-api.html s3://rdi-openapi
