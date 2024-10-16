@@ -56,10 +56,10 @@ jobs:
       if: steps.changes.outputs.portalapi == 'true'
       run: |
         npm run build-docs -- openapi/rdi-portal-api.yaml --output=rdi-portal-api.html
-        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
+        aws s3 cp rdi-portal-api.html s3://rdi-openapi
 
     - name: Deploy rdi-verification-api.html
       if: steps.changes.outputs.verificationapi == 'true'
       run: |
         npm run build-docs -- openapi/rdi-verification-api.yaml --output=rdi-verification-api.html
-        aws s3 sync rdi-portal-api.html s3://rdi-openapi --delete
+        aws s3 cp rdi-portal-api.html s3://rdi-openapi
