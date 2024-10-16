@@ -3,7 +3,7 @@ info:
   title: RDI Verification Service API
   description: |
     The API is based on REST principles. It uses standard HTTP response codes and verbs, and token-based authentication.
-    All requests must be made over HTTPS with TLS 1.2+ and Server Name Indication enabled. HTTP requests over HTTP will fail.
+    All requests must be made over HTTPS with TLS 1.2+ and Server Name Indication enabled. HTTP requests over HTTP will fail. 
 
     ## Base URL
     ```
