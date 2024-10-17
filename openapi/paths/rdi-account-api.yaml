@@ -4,9 +4,9 @@ info:
   description: API for managing organizations.
   version: 1.0.0
 servers:
-  - url: https://api.rdi.io
+  - url: http://localhost:8080/
 paths:
-  /v1/organizations:
+  /api/v1/organizations:
     post:
       summary: Create a new organization
       description: Creates a new organization.
@@ -123,7 +123,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organizationId}:
+  /api/v1/organizations/{organization_id}:
     get:
       summary: Retrieve a single organization
       description: Retrieves details of a single organization by its ID.
@@ -132,7 +132,7 @@ paths:
         - Organizations
       parameters:
         - in: path
-          name: organizationId
+          name: organization_id
           required: true
           schema:
             type: string
@@ -159,7 +159,7 @@ paths:
         - Organizations
       parameters:
         - in: path
-          name: organizationId
+          name: organization_id
           required: true
           schema:
             type: string
@@ -230,13 +230,13 @@ paths:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
     delete:
       summary: Delete an organization
-      description: Deletes an existing organization account by id.
+      description: Deletes an existing organization by id.
       operationId: deleteOrganization
       tags:
         - Organizations
       parameters:
         - in: path
-          name: organizationId
+          name: organization_id
           required: true
           schema:
             type: string
@@ -251,16 +251,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organizationId}/apps:
+  /api/v1/organizations/{organization_id}/apps:
     post:
       summary: Install the apps
       description: Install the apps.
       operationId: installApps
       tags:
-        - Organizations
+        - Apps
       parameters:
         - in: path
-          name: organizationId
+          name: organization_id
           required: true
           schema:
             type: string
@@ -280,6 +280,7 @@ paths:
                   description: Selected app
                   type: array
                   uniqueItems: true
+                  minItems: 1
                   items:
                     type: string
                     example: "ONFIDO"
@@ -301,6 +302,308 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/organizations/{organization_id}/apps/{app_id}:
+    put:
+      summary: Update apps details
+      description: Updates apps details
+      operationId: updateApps
+      tags:
+        - Apps
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: path
+          name: app_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the apps
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      requestBody:
+        description: Updated apps details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_properties:
+                  description: Custom properties of the app
+                  type: object
+                  example:
+                    onfido.similarity_score_threshold: 0.8
+                    onfido.similarity_checking_flag: false
+                app_api_key:
+                  type: string
+                  description: Api Key of the app
+                  example: api_sandbox.57u0VjSqHpL.8yyhfdGevnAEkRbLkBzufrSlEz6xTO8j
+      responses:
+        "200":
+          description: Apps details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrgAppDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    delete:
+      summary: Uninstalls apps
+      description: Uninstalls apps.
+      operationId: uninstallApps
+      tags:
+        - Apps
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+        - in: path
+          name: app_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the apps
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      responses:
+        "204":
+          description: Apps uninstalled successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/organizations/{organization_id}/images:
+    post:
+      summary: Upload organization's logo
+      description: Upload organization's logo
+      operationId: uploadOrganizationLogo
+      tags:
+        - Organizations
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The image file to upload
+      responses:
+        "201":
+          description: Organization's logo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    delete:
+      summary: Delete organization's logo
+      description: Delete organization's logo
+      operationId: deleteOrganizationLogo
+      tags:
+        - Organizations
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      responses:
+        "204":
+          description: Organization's logo deleted successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/organizations/{organization_id}/accounts:
+    post:
+      summary: Create a new account
+      description: Creates a new account.
+      operationId: createAccount
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      requestBody:
+        description: Account creation details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                  example: Kent
+                email:
+                  type: string
+                  description: Email of the user
+                  example: kent@reldyn.co
+                phone_no:
+                  type: string
+                  description: Phone no of the user
+                  example: +601234567890
+      responses:
+        "201":
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/organizations/{organization_id}/accounts/{account_id}:
+    put:
+      summary: Update account details
+      description: Update account details.
+      operationId: updateAccount
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the account
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      requestBody:
+        description: Updated Account details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                  example: Kent
+                email:
+                  type: string
+                  description: Email of the user
+                  example: kent@reldyn.co
+                phone_no:
+                  type: string
+                  description: Phone no of the user
+                  example: +601234567890
+      responses:
+        "200":
+          description: Account updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    delete:
+      summary: Delete account from organization
+      description: Delete account from organization.
+      operationId: deleteAccount
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the account
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      responses:
+        "204":
+          description: Account deleted successfully
         "500":
           description: Internal server error
           content:
@@ -376,12 +679,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrgAppDto"
+        clients:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrgClientDto"
     OrgAppDto:
       type: object
       properties:
         id:
           type: string
-          description: Unique identifier for the organization
+          description: Unique identifier for the app
           example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
         created_at:
           type: string
@@ -389,7 +696,7 @@ components:
           example: "2021-02-01T12:34:56Z"
         created_by:
           type: string
-          description: Name of the user that created this organization
+          description: Name of the user that created this app
           example: Foo
         updated_at:
           type: string
@@ -397,12 +704,8 @@ components:
           example: "2021-02-01T12:34:56Z"
         updated_by:
           type: string
-          description: Name of the user that last updated this organization
+          description: Name of the user that last updated this app
           example: Foo
-        org_id:
-          type: string
-          description: Unique identifier for the organization
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
         app_name:
           type: string
           description: Name of the app
@@ -410,19 +713,114 @@ components:
         app_properties:
           description: Custom properties of the app
           type: object
-          properties:
-            key:
-              type: string
-              description: Key of the property
-              example: onfido.similarity.score_threshold
-            value:
-              type: string
-              description: Value of the property
-              example: 0.5
+          example:
+            onfido.similarity_score_threshold: 0.8
+            onfido.similarity_checking_flag: false
         app_api_key:
           type: string
           description: Api Key of the app
           example: api_sandbox.57u0VjSqHpL.8yyhfdGevnAEkRbLkBzufrSlEz6xTO8j
+    OrgClientDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the client
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this client
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this client
+          example: Foo
+        name:
+          type: string
+          description: Name of the client
+          example: Be U
+        note:
+          type: string
+          description: Note for the organization
+          example: Be U client
+    AccountDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the user
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this user
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this user
+          example: Foo
+        name:
+          type: string
+          description: Name of the user
+          example: Kent
+        email:
+          type: string
+          description: Email of the user
+          example: kent@reldyn.co
+        phone_no:
+          type: string
+          description: Phone no of the user
+          example: +601234567890
+        last_login_time:
+          type: string
+          format: date-time
+          description: Last login time of the user
+          example: "2021-02-01T12:34:56Z"
+        user_type:
+          type: string
+          description: Type of the user
+          enum:
+            - PLATFORM
+            - ORG_USER
+          example: ORG_USER
+    OrgUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the org user
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this org user
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this org user
+          example: Foo
     GlobalErrorResponseDto:
       type: object
       properties:
@@ -439,7 +837,7 @@ components:
         path:
           type: string
           description: The endpoint path where the error occurred
-          example: "/v1/organizations"
+          example: "/api/v1/organizations"
     OrganizationsPaginatedResponse:
       type: object
       properties:
