@@ -23,8 +23,6 @@ servers:
 tags:
   - name: Organizations
     description: The API allows you to view and manage the organizations.
-  - name: Apps
-    description: The API allows you to view and manage the apps.
   - name: Accounts
     description: The API allows you to view and manage the accounts.
 paths:
@@ -283,7 +281,7 @@ paths:
       description: Install the apps.
       operationId: installApps
       tags:
-        - Apps
+        - Organizations
       parameters:
         - in: path
           name: organization_id
@@ -340,7 +338,7 @@ paths:
       description: Updates apps details
       operationId: updateApps
       tags:
-        - Apps
+        - Organizations
       parameters:
         - in: path
           name: organization_id
@@ -392,7 +390,7 @@ paths:
       description: Uninstalls apps.
       operationId: uninstallApps
       tags:
-        - Apps
+        - Organizations
       parameters:
         - in: path
           name: organization_id
