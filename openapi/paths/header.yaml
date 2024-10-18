@@ -18,5 +18,3 @@ info:
 tags:
   - name: Organizations
     description: The API allows you to view and manage the organizations.
-  - name: Accounts
-    description: The API allows you to view and manage the accounts.

@@ -465,7 +465,7 @@ paths:
       description: Creates a new account.
       operationId: createAccount
       tags:
-        - Accounts
+        - Organizations
       parameters:
         - in: path
           name: organization_id
@@ -522,7 +522,7 @@ paths:
       description: Update account details.
       operationId: updateAccount
       tags:
-        - Accounts
+        - Organizations
       parameters:
         - in: path
           name: organization_id
@@ -585,7 +585,7 @@ paths:
       description: Delete account from organization.
       operationId: deleteAccount
       tags:
-        - Accounts
+        - Organizations
       parameters:
         - in: path
           name: organization_id
