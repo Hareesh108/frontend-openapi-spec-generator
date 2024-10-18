@@ -482,6 +482,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
   '/api/v1/organizations/{organization_id}/accounts':
+    get:
+      summary: Retrieve a list of accounts under the organization
+      description: Retrieve a list of accounts under the organization.
+      operationId: listAccounts
+      tags:
+        - Organizations
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Custom filtering parameters
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'org_name,desc'
+          description: 'Sort by properties, e.g. `status,desc` or `id,asc`'
+      responses:
+        '200':
+          description: A list of accounts with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsPaginatedResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
     post:
       summary: Create a new account
       description: Creates a new account.
@@ -506,6 +558,7 @@ paths:
               required:
                 - name
                 - email
+                - password
               properties:
                 name:
                   type: string
@@ -515,6 +568,10 @@ paths:
                   type: string
                   description: Email of the user
                   example: kent@reldyn.co
+                password:
+                  type: string
+                  description: Password of the user
+                  example: Kent123456
                 phone_no:
                   type: string
                   description: Phone no of the user
@@ -871,6 +928,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrganizationDto'
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    AccountsPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDto'
         number:
           type: integer
           example: 0
