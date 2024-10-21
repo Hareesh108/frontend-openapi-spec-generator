@@ -4,9 +4,9 @@ info:
   description: API for managing organizations.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/
+  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
 paths:
-  /api/v1/organizations:
+  /v1/organizations:
     post:
       summary: Create a new organization
       description: Creates a new organization.
@@ -123,7 +123,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}:
+  /v1/organizations/{organization_id}:
     get:
       summary: Retrieve a single organization
       description: Retrieves details of a single organization by its ID.
@@ -251,7 +251,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}/apps:
+  /v1/organizations/{organization_id}/apps:
     post:
       summary: Install the apps
       description: Install the apps.
@@ -308,7 +308,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}/apps/{app_id}:
+  /v1/organizations/{organization_id}/apps/{app_id}:
     put:
       summary: Update apps details
       description: Updates apps details
@@ -391,7 +391,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}/images:
+  /v1/organizations/{organization_id}/images:
     post:
       summary: Upload organization's logo
       description: Upload organization's logo
@@ -459,7 +459,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}/accounts:
+  /v1/organizations/{organization_id}/accounts:
     get:
       summary: Retrieve a list of accounts under the organization
       description: Retrieve a list of accounts under the organization.
@@ -573,7 +573,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/organizations/{organization_id}/accounts/{account_id}:
+  /v1/organizations/{organization_id}/accounts/{account_id}:
     put:
       summary: Update account details
       description: Update account details.
