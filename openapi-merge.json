@@ -4,6 +4,9 @@
             "inputFile": "./openapi/paths/header.yaml"
         },
         {
+            "inputFile": "./openapi/paths/keycloak-api.yaml"
+        },
+        {
             "inputFile": "./openapi/paths/rdi-account-api.yaml"
         }
     ],
