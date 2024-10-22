@@ -103,6 +103,39 @@ paths:
           description: 'Unauthorized (e.g., invalid client credentials).'
       security:
         - basicAuth: []
+    /auth/realms/rdi-portal/protocol/openid-connect/token: null
+    get:
+      summary: Retrieve user info
+      description: >
+        This endpoint retrieves user information such as subject ID, email
+        verification status, and preferred username using a Bearer token.
+      operationId: retrieveUserInfo
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Successful response with user info.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sub:
+                    type: string
+                    description: The unique identifier for the user (subject).
+                    example: 922301cb-aec5-4cfd-bb08-94adef4f51ed
+                  email_verified:
+                    type: boolean
+                    description: Indicates if the user's email is verified.
+                    example: false
+                  preferred_username:
+                    type: string
+                    description: The user's preferred username.
+                    example: admin@reldyn.co
+        '401':
+          description: 'Unauthorized access (e.g., missing or invalid Bearer token).'
+      security:
+        - bearerAuth: []
   /v1/organizations:
     post:
       summary: Create a new organization

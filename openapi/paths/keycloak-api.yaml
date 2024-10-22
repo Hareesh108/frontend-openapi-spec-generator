@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: OAuth 2.0 Token API
+  description: API for obtaining OAuth 2.0 tokens using password grant.
+  version: 1.0.0
+servers:
+  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
+    description: Production server
+paths:
+  /auth/realms/rdi-portal/protocol/openid-connect/token:
+    post:
+      summary: Generate an access token
+      description: |
+        This endpoint issues an OAuth 2.0 token using the password grant type.
+      operationId: generateAccessToken
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  description: The OAuth 2.0 grant type (should be "password").
+                  example: password
+                username:
+                  type: string
+                  description: The user's username.
+                  example: johndoe
+                password:
+                  type: string
+                  description: The user's password.
+                  example: secret_password
+              required:
+                - grant_type
+                - username
+                - password
+      responses:
+        "200":
+          description: Successful response with OAuth 2.0 tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: The OAuth 2.0 access token.
+                    example: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIxOW...
+                  expires_in:
+                    type: integer
+                    description: The number of seconds until the access token expires.
+                    example: 299
+                  refresh_expires_in:
+                    type: integer
+                    description: The number of seconds until the refresh token expires.
+                    example: 1799
+                  refresh_token:
+                    type: string
+                    description: The OAuth 2.0 refresh token.
+                    example: eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIx...
+                  token_type:
+                    type: string
+                    description: The type of token (e.g., "Bearer").
+                    example: Bearer
+                  not-before-policy:
+                    type: integer
+                    example: 0
+                  session_state:
+                    type: string
+                    description: Session state identifier.
+                    example: bac70a91-02cb-4e24-877a-85e90cd7ecef
+                  scope:
+                    type: string
+                    description: The granted scopes for this token.
+                    example: email profile
+        "400":
+          description: Invalid request (e.g., missing or invalid parameters).
+        "401":
+          description: Unauthorized (e.g., invalid client credentials).
+      security:
+        - basicAuth: []
+    /auth/realms/rdi-portal/protocol/openid-connect/token:
+    get:
+      summary: Retrieve user info
+      description: |
+        This endpoint retrieves user information such as subject ID, email verification status, and preferred username using a Bearer token.
+      operationId: retrieveUserInfo
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Successful response with user info.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sub:
+                    type: string
+                    description: The unique identifier for the user (subject).
+                    example: 922301cb-aec5-4cfd-bb08-94adef4f51ed
+                  email_verified:
+                    type: boolean
+                    description: Indicates if the user's email is verified.
+                    example: false
+                  preferred_username:
+                    type: string
+                    description: The user's preferred username.
+                    example: admin@reldyn.co
+        "401":
+          description: Unauthorized access (e.g., missing or invalid Bearer token).
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
