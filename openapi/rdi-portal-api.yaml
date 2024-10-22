@@ -134,13 +134,7 @@ paths:
                       roles:
                         type: array
                         items:
-                          type: string
-                          enum:
-                            - admin
-                            - org_user
-                            - viewer
-                            - editor
-                            - owner
+                          $ref: '#/components/schemas/Role'
                         description: Roles assigned to the user within the realm.
                         example:
                           - admin
@@ -818,11 +812,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
   schemas:
+    Role:
+      type: string
+      enum:
+        - admin
+        - org_user
+        - viewer
+        - editor
+        - owner
+      description: Possible roles assigned to the user.
     OrganizationDto:
       type: object
       properties:
@@ -1115,3 +1114,11 @@ components:
         empty:
           type: boolean
           example: false
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
