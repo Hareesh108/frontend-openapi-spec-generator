@@ -83,7 +83,7 @@ paths:
           description: Unauthorized (e.g., invalid client credentials).
       security:
         - basicAuth: []
-    /auth/realms/rdi-portal/protocol/openid-connect/userinfo:
+  /auth/realms/rdi-portal/protocol/openid-connect/userinfo:
     get:
       summary: Retrieve user info
       description: |
