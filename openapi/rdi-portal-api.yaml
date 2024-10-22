@@ -128,6 +128,22 @@ paths:
                     type: boolean
                     description: Indicates if the user's email is verified.
                     example: false
+                  realm_access:
+                    type: object
+                    properties:
+                      roles:
+                        type: array
+                        items:
+                          type: string
+                          enum:
+                            - admin
+                            - org_user
+                            - viewer
+                            - editor
+                            - owner
+                        description: Roles assigned to the user within the realm.
+                        example:
+                          - admin
                   preferred_username:
                     type: string
                     description: The user's preferred username.
