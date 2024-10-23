@@ -89,7 +89,66 @@ paths:
           name: q
           schema:
             type: string
-          description: Custom filtering parameters
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+            
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+            
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+            
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by organization email
+              value: '[{ "org_email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by organization name
+              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }]'
+            example3:
+              summary: Filter by active status
+              value: '[{ "org_status": { "op": "in","values": [ "ACTIVE", "INACTIVE" ] } }]'
+            example4:
+              summary: Filter by organization name and org_registration_no
+              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }, { "org_registration_no": { "op": "eq","values": [ "1234567890" ] } }]'
         - in: query
           name: page
           schema:
@@ -109,7 +168,28 @@ paths:
             items:
               type: string
               example: "org_name,desc"
-          description: Sort by properties, e.g. `status,desc` or `id,asc`
+          description: |-
+            Format is `sortFieldName,direction`.
+            
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+            
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
       responses:
         "200":
           description: A list of organizations with pagination details
@@ -478,7 +558,53 @@ paths:
           name: q
           schema:
             type: string
-          description: Custom filtering parameters
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+            
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `name`
+              - `email`
+              - `phone_no`
+              - `last_login_time`
+              - `user_type`
+            
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+            
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by account email
+              value: '[{ "email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by account name
+              value: '[{ "name": { "op": "like","values": [ "Kent" ] } }]'
         - in: query
           name: page
           schema:
@@ -497,8 +623,22 @@ paths:
             type: array
             items:
               type: string
-              example: "org_name,desc"
-          description: Sort by properties, e.g. `status,desc` or `id,asc`
+              example: "name,desc"
+          description: |-
+            Format is `sortFieldName,direction`.
+            
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `name`
+              - `email`
+              - `phone_no`
+              - `last_login_time`
+              - `user_type`
+            
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
       responses:
         "200":
           description: A list of accounts with pagination details
@@ -661,6 +801,105 @@ paths:
       responses:
         "204":
           description: Account deleted successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /v1/roles:
+    get:
+      summary: Retrieve a list of roles
+      description: Retrieve a list of roles.
+      operationId: listRoles
+      tags:
+        - Organizations
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+            
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `role_level`
+            
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+            
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by role name
+              value: '[{ "name": { "op": "like","values": [ "org_user" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "name,asc"
+          description: |-
+            Format is `sortFieldName,direction`.
+            
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `role_level`
+            
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        "200":
+          description: Roles details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolesPaginatedResponse"
         "500":
           description: Internal server error
           content:
@@ -878,6 +1117,41 @@ components:
           type: string
           description: Name of the user that last updated this org user
           example: Foo
+    RoleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the role
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this org user
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this org user
+          example: Foo
+        name:
+          type: string
+          description: Name of the role
+          example: org_user
+        description:
+          type: string
+          description: Description of the role
+          example: Platform org user to manage their own organizations
+        role_level:
+          type: string
+          description: Level of the role
+          example: CLIENT
     GlobalErrorResponseDto:
       type: object
       properties:
@@ -933,6 +1207,37 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AccountDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    RolesPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoleDto"
         number:
           type: integer
           example: 0
