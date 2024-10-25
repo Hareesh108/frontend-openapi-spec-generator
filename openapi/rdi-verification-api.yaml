@@ -24,7 +24,7 @@ info:
     - Text fields support UTF-8 encoding but certain special characters are not allowed.
   version: 1.0.0
 servers:
-  - url: https://{tenant_name}.reldynidentity.com/api
+  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
     description: API server
     variables:
       tenant_name:
