@@ -24,7 +24,7 @@ servers:
 tags:
   - name: Authentication
     description: API for obtaining OAuth 2.0 tokens using password grant.
-  - name: Organizations
+  - name: Admins
     description: The API allows you to view and manage the organizations.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
@@ -152,7 +152,7 @@ paths:
       description: Creates a new organization.
       operationId: createOrganization
       tags:
-        - Organizations
+        - Admins
       requestBody:
         description: Organization creation details
         required: true
@@ -163,7 +163,6 @@ paths:
               required:
                 - org_name
                 - org_registration_no
-                - org_status
               properties:
                 org_name:
                   type: string
@@ -186,13 +185,6 @@ paths:
                   format: email
                   description: Contact email for the organization
                   example: beu@beu.com
-                org_status:
-                  type: string
-                  description: 'Status of the organization (e.g., active, inactive)'
-                  enum:
-                    - ACTIVE
-                    - INACTIVE
-                  example: ACTIVE
                 note:
                   type: string
                   description: Note for the organization
@@ -233,7 +225,7 @@ paths:
       description: Retrieves a list of all organizations.
       operationId: listOrganizations
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: query
           name: q
@@ -370,7 +362,7 @@ paths:
       description: Retrieves details of a single organization by its ID.
       operationId: getOrganization
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -397,7 +389,7 @@ paths:
       description: Updates details of an existing organization.
       operationId: updateOrganization
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -476,7 +468,7 @@ paths:
       description: Deletes an existing organization by id.
       operationId: deleteOrganization
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -500,7 +492,7 @@ paths:
       description: Install the apps.
       operationId: installApps
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -557,7 +549,7 @@ paths:
       description: Updates apps details
       operationId: updateApps
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -581,7 +573,7 @@ paths:
             schema:
               type: object
               properties:
-                app_properties:
+                default_app_properties:
                   description: Custom properties of the app
                   type: object
                   example:
@@ -609,7 +601,7 @@ paths:
       description: Uninstalls apps.
       operationId: uninstallApps
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -640,7 +632,7 @@ paths:
       description: Upload organization's logo
       operationId: uploadOrganizationLogo
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -684,7 +676,7 @@ paths:
       description: Delete organization's logo
       operationId: deleteOrganizationLogo
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -708,7 +700,7 @@ paths:
       description: Retrieve a list of collaborators under the organization.
       operationId: listCollaborators
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -823,7 +815,7 @@ paths:
       description: Creates a new account / Link an existing account.
       operationId: createAccount
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -890,7 +882,7 @@ paths:
       description: Update account details.
       operationId: updateAccount
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -954,7 +946,7 @@ paths:
       description: Delete account from organization.
       operationId: deleteAccount
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: path
           name: organization_id
@@ -985,7 +977,7 @@ paths:
       description: Retrieve a list of accounts.
       operationId: listAccounts
       tags:
-        - Organizations
+        - Admins
       parameters:
         - in: query
           name: q
@@ -1169,10 +1161,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrgAppDto'
-        clients:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrgClientDto'
     OrgAppDto:
       type: object
       properties:
@@ -1200,7 +1188,7 @@ components:
           type: string
           description: Name of the app
           example: ONFIDO
-        app_properties:
+        default_app_properties:
           description: Custom properties of the app
           type: object
           example:
