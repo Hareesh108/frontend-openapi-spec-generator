@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
 paths:
-  /v1/organizations:
+  /v1/admins/organizations:
     post:
       summary: Create a new organization
       description: Creates a new organization.
@@ -23,6 +23,7 @@ paths:
               required:
                 - org_name
                 - org_registration_no
+                - org_status
               properties:
                 org_name:
                   type: string
@@ -45,6 +46,13 @@ paths:
                   format: email
                   description: Contact email for the organization
                   example: beu@beu.com
+                org_status:
+                  type: string
+                  description: Status of the organization (e.g., active, inactive)
+                  enum:
+                    - ACTIVE
+                    - INACTIVE
+                  example: ACTIVE
                 note:
                   type: string
                   description: Note for the organization
@@ -203,7 +211,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}:
+  /v1/admins/organizations/{organization_id}:
     get:
       summary: Retrieve a single organization
       description: Retrieves details of a single organization by its ID.
@@ -331,7 +339,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}/apps:
+  /v1/admins/organizations/{organization_id}/apps:
     post:
       summary: Install the apps
       description: Install the apps.
@@ -388,7 +396,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}/apps/{app_id}:
+  /v1/admins/organizations/{organization_id}/apps/{app_id}:
     put:
       summary: Update apps details
       description: Updates apps details
@@ -471,7 +479,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}/images:
+  /v1/admins/organizations/{organization_id}/images:
     post:
       summary: Upload organization's logo
       description: Upload organization's logo
@@ -539,11 +547,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}/accounts:
+  /v1/admins/organizations/{organization_id}/collaborators:
     get:
-      summary: Retrieve a list of accounts under the organization
-      description: Retrieve a list of accounts under the organization.
-      operationId: listAccounts
+      summary: Retrieve a list of collaborators under the organization
+      description: Retrieve a list of collaborators under the organization.
+      operationId: listCollaborators
       tags:
         - Organizations
       parameters:
@@ -576,9 +584,7 @@ paths:
               - `id`
               - `name`
               - `email`
-              - `phone_no`
               - `last_login_time`
-              - `user_type`
             
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -600,10 +606,10 @@ paths:
               - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
           examples:
             example1:
-              summary: Filter by account email
+              summary: Filter by collaborators email
               value: '[{ "email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
             example2:
-              summary: Filter by account name
+              summary: Filter by collaborators name
               value: '[{ "name": { "op": "like","values": [ "Kent" ] } }]'
         - in: query
           name: page
@@ -632,20 +638,18 @@ paths:
               - `id`
               - `name`
               - `email`
-              - `phone_no`
               - `last_login_time`
-              - `user_type`
             
             - **direction**: The sorting order. Possible values are:
               - `asc`: Sort in ascending order
               - `desc`: Sort in descending order
       responses:
         "200":
-          description: A list of accounts with pagination details
+          description: A list of collaborators with pagination details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountsPaginatedResponse"
+                $ref: "#/components/schemas/AccountsWithAccessScopeInfoPaginatedResponse"
         "500":
           description: Internal server error
           content:
@@ -653,8 +657,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
     post:
-      summary: Create a new account
-      description: Creates a new account.
+      summary: Create a new account / Link an existing account
+      description: Creates a new account / Link an existing account.
       operationId: createAccount
       tags:
         - Organizations
@@ -667,7 +671,7 @@ paths:
           description: Unique identifier for the organization
           example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
       requestBody:
-        description: Account creation details
+        description: Account creation / linking details
         required: true
         content:
           application/json:
@@ -677,6 +681,7 @@ paths:
                 - name
                 - email
                 - password
+                - access_scope
               properties:
                 name:
                   type: string
@@ -690,17 +695,21 @@ paths:
                   type: string
                   description: Password of the user
                   example: Kent123456
-                phone_no:
+                access_scope:
+                  description: Selected access scope of the user
                   type: string
-                  description: Phone no of the user
-                  example: +601234567890
+                  example: "viewer"
+                account_id:
+                  description: Account id of an existing user for linking account
+                  type: string
+                  example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
       responses:
         "201":
           description: Account created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountDto"
+                $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
         "400":
           description: Invalid request parameters
           content:
@@ -713,7 +722,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/organizations/{organization_id}/accounts/{account_id}:
+  /v1/admins/organizations/{organization_id}/collaborators/{account_id}:
     put:
       summary: Update account details
       description: Update account details.
@@ -745,6 +754,7 @@ paths:
               required:
                 - name
                 - email
+                - access_scope
               properties:
                 name:
                   type: string
@@ -754,17 +764,17 @@ paths:
                   type: string
                   description: Email of the user
                   example: kent@reldyn.co
-                phone_no:
+                access_scope:
+                  description: Selected access scope of the user
                   type: string
-                  description: Phone no of the user
-                  example: +601234567890
+                  example: "viewer"
       responses:
         "200":
           description: Account updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountDto"
+                $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
         "400":
           description: Invalid request parameters
           content:
@@ -807,11 +817,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/roles:
+  /v1/admins/accounts:
     get:
-      summary: Retrieve a list of roles
-      description: Retrieve a list of roles.
-      operationId: listRoles
+      summary: Retrieve a list of accounts
+      description: Retrieve a list of accounts.
+      operationId: listAccounts
       tags:
         - Organizations
       parameters:
@@ -831,14 +841,14 @@ paths:
               }
             ]
             ```
-            
+
             **Where:**
             - **filterFieldName**: The field to filter by. Possible values include:
               - `id`
               - `name`
-              - `description`
-              - `role_level`
-            
+              - `email`
+              - `last_login_time`
+
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
               - `!eq`: Not equal
@@ -852,15 +862,18 @@ paths:
               - `lte`: Less than or equal to
               - `btw`: Between
               - `!btw`: Not between
-            
+
             - **value**: The value(s) used for filtering.
               - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
               - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
               - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
           examples:
             example1:
-              summary: Filter by role name
-              value: '[{ "name": { "op": "like","values": [ "org_user" ] } }]'
+              summary: Filter by account email
+              value: '[{ "email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by account name
+              value: '[{ "name": { "op": "like","values": [ "Kent" ] } }]'
         - in: query
           name: page
           schema:
@@ -879,27 +892,27 @@ paths:
             type: array
             items:
               type: string
-              example: "name,asc"
+              example: "name,desc"
           description: |-
             Format is `sortFieldName,direction`.
-            
+
             **Where:**
             - **sortFieldName**: The field to sort by. Possible values include:
               - `id`
               - `name`
-              - `description`
-              - `role_level`
-            
+              - `email`
+              - `last_login_time`
+
             - **direction**: The sorting order. Possible values are:
               - `asc`: Sort in ascending order
               - `desc`: Sort in descending order
       responses:
         "200":
-          description: Roles details retrieved successfully
+          description: A list of accounts with pagination details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RolesPaginatedResponse"
+                $ref: "#/components/schemas/AccountsPaginatedResponse"
         "500":
           description: Internal server error
           content:
@@ -1078,28 +1091,17 @@ components:
           type: string
           description: Email of the user
           example: kent@reldyn.co
-        phone_no:
-          type: string
-          description: Phone no of the user
-          example: +601234567890
         last_login_time:
           type: string
           format: date-time
           description: Last login time of the user
           example: "2021-02-01T12:34:56Z"
-        user_type:
-          type: string
-          description: Type of the user
-          enum:
-            - PLATFORM
-            - ORG_USER
-          example: ORG_USER
-    OrgUserDto:
+    AccountWithAccessScopeInfoDto:
       type: object
       properties:
         id:
           type: string
-          description: Unique identifier for the org user
+          description: Unique identifier for the user
           example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
         created_at:
           type: string
@@ -1107,7 +1109,7 @@ components:
           example: "2021-02-01T12:34:56Z"
         created_by:
           type: string
-          description: Name of the user that created this org user
+          description: Name of the user that created this user
           example: Foo
         updated_at:
           type: string
@@ -1115,43 +1117,25 @@ components:
           example: "2021-02-01T12:34:56Z"
         updated_by:
           type: string
-          description: Name of the user that last updated this org user
-          example: Foo
-    RoleDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the role
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        created_by:
-          type: string
-          description: Name of the user that created this org user
-          example: Foo
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_by:
-          type: string
-          description: Name of the user that last updated this org user
+          description: Name of the user that last updated this user
           example: Foo
         name:
           type: string
-          description: Name of the role
-          example: org_user
-        description:
+          description: Name of the user
+          example: Kent
+        email:
           type: string
-          description: Description of the role
-          example: Platform org user to manage their own organizations
-        role_level:
+          description: Email of the user
+          example: kent@reldyn.co
+        last_login_time:
           type: string
-          description: Level of the role
-          example: CLIENT
+          format: date-time
+          description: Last login time of the user
+          example: "2021-02-01T12:34:56Z"
+        access_scope:
+          type: string
+          description: Access rights granted to the user within the organization
+          example: viewer
     GlobalErrorResponseDto:
       type: object
       properties:
@@ -1168,7 +1152,7 @@ components:
         path:
           type: string
           description: The endpoint path where the error occurred
-          example: "/api/v1/organizations"
+          example: "/v1/organizations"
     OrganizationsPaginatedResponse:
       type: object
       properties:
@@ -1231,13 +1215,13 @@ components:
         empty:
           type: boolean
           example: false
-    RolesPaginatedResponse:
+    AccountsWithAccessScopeInfoPaginatedResponse:
       type: object
       properties:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/RoleDto"
+            $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
         number:
           type: integer
           example: 0
