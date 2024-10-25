@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
-  title: RDI Verification Service API
+  title: Verification Service API
   description: |
     The API is based on REST principles. It uses standard HTTP response codes and verbs, and token-based authentication.
-    All requests must be made over HTTPS with TLS 1.2+ and Server Name Indication enabled. HTTP requests over HTTP will fail. 
+    All requests must be made over HTTPS with TLS 1.2+ and Server Name Indication enabled. HTTP requests over HTTP will fail.
 
     ## Base URL
     ```
-    https://TENANT_NAME.reldyn.dev/api
+    https://TENANT_NAME.reldynidentity.com/api
     ```
     Replace `TENANT_NAME` with your tenant name from the Identity Platform Dashboard tenant URL.
 
@@ -23,12 +23,8 @@ info:
     - Responses return JSON, except for downloads.
     - Text fields support UTF-8 encoding but certain special characters are not allowed.
   version: 1.0.0
-  x-logo:
-    url: "https://reldyn.co/assets/images/logo.svg"
-    backgroundColor: "#ee0979"
-    altText: Reldyn
 servers:
-  - url: https://{tenant_name}.reldyn.dev/api
+  - url: https://{tenant_name}.reldynidentity.com/api
     description: API server
     variables:
       tenant_name:
@@ -46,26 +42,32 @@ paths:
         - Verification
       security:
         - BearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Payload to create a verification request
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VerificationRequest"
+              $ref: '#/components/schemas/VerificationRequest'
       responses:
-        "201":
+        '201':
           description: Verification request created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VerificationResponse"
-        "400":
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
           description: Invalid request payload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/verifications/{request_reference}:
     get:
       summary: Retrieve verification status
@@ -76,6 +78,11 @@ paths:
       security:
         - BearerAuth: []
       parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
         - in: path
           name: request_reference
           required: true
@@ -85,26 +92,27 @@ paths:
           example: request_123
         - in: query
           name: details_level
-          required: true
+          required: false
           schema:
             type: string
             enum:
               - BASIC
               - FULL
+            default: BASIC 
           description: Specify the level of details to return; BASIC returns summary only, FULL returns summary and results.
       responses:
-        "200":
+        '200':
           description: Verification status retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VerificationStatusResponse"
-        "400":
+                $ref: '#/components/schemas/VerificationStatusResponse'
+        '400':
           description: Invalid request payload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/verifications/{request_reference}/download:
     post:
       summary: Download a document
@@ -129,21 +137,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DocumentDownloadRequest"
+              $ref: '#/components/schemas/DocumentDownloadRequest'
       responses:
-        "200":
+        '200':
           description: Document downloaded successfully
           content:
             application/octet-stream:
               schema:
                 type: string
                 format: binary
-        "400":
+        '400':
           description: Invalid request payload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     BearerAuth:
@@ -155,11 +163,12 @@ components:
     VerificationRequest:
       type: object
       required:
-        - services
+        - app
+        - customer_internal_reference
       properties:
-        services:
+        app:
           type: string
-          description: Services for verification (currently only supports ONFIDO)
+          description: App for verification (currently only supports ONFIDO)
           example: ONFIDO
         customer_internal_reference:
           type: string
@@ -176,7 +185,14 @@ components:
               type: string
               description: If populated, will skip applicant creation
               example: applicant_123
-
+            full_name:
+              type: string
+              description: If populated, we will send in as part of workflow input
+              example: Mohammed Faris
+            id_number:
+              type: string
+              description: If populated, we will send in as part of workflow input
+              example: 860303-10-7491
     VerificationResponse:
       type: object
       properties:
@@ -184,7 +200,6 @@ components:
           type: string
           description: Status of the request
           enum:
-            - PENDING
             - PROCESSING
             - REVIEW
             - APPROVED
@@ -200,7 +215,7 @@ components:
           type: string
           format: date-time
           description: Timestamp when the request was created
-          example: "2022-06-28T15:39:42Z"
+          example: '2022-06-28T15:39:42Z'
         request_reference:
           type: string
           description: Unique reference for querying request status
@@ -230,8 +245,8 @@ components:
           type: string
           description: Status of the request
           enum:
-            - PENDING
             - PROCESSING
+            - AWAITING_INPUT
             - REVIEW
             - APPROVED
             - DECLINED
@@ -240,7 +255,6 @@ components:
           example: DECLINED
         reason:
           type: string
-          nullable: true
           description: Reason for declined status
           example: SIMILARITY_SCORE_BELOW_THRESHOLD
         request_reference:
@@ -251,70 +265,23 @@ components:
           type: string
           format: date-time
           description: Timestamp when the request was created
-          example: "2022-06-28T15:39:42Z"
+          example: '2022-06-28T15:39:42Z'
         updated_at:
           type: string
           format: date-time
           description: Timestamp when the request was last updated
-          example: "2022-07-28T15:40:42Z"
+          example: '2022-07-28T15:40:42Z'
         summary:
           type: array
           description: Summary of the verification request details
           items:
             type: object
-            properties:
-              service:
-                type: string
-                description: Name of the service (e.g., ONFIDO)
-                example: ONFIDO
-              created_at:
-                type: string
-                format: date-time
-                description: When the summary was created
-                example: "2022-06-28T15:39:42Z"
-              updated_at:
-                type: string
-                format: date-time
-                description: When the summary was last updated
-                example: "2022-07-28T15:39:52Z"
-              value:
-                type: object
-                description: Dynamic key-value pairs for the summary
-                additionalProperties: true
         results:
           type: array
           description: Results, populated when status is REVIEW, APPROVED, or DECLINED
           items:
             type: object
-            properties:
-              service:
-                type: string
-                description: Name of the service (e.g., ONFIDO)
-                example: ONFIDO
-              created_at:
-                type: string
-                format: date-time
-                description: When the result was created
-                example: "2022-06-28T15:39:42Z"
-              updated_at:
-                type: string
-                format: date-time
-                description: When the result was last updated
-                example: "2022-07-28T15:39:52Z"
-              values:
-                type: array
-                description: Dynamic key-value pairs based on the service
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Identifier for the dynamic property
-                      example: document_check_eb954
-                    value:
-                      type: object
-                      description: Dynamic key-value pairs for the result
-                      additionalProperties: true
+          
     DocumentDownloadRequest:
       type: object
       required:
@@ -328,7 +295,7 @@ components:
         value_id:
           type: string
           description: Unique identifier for the object to be downloaded
-          example: "123"
+          example: '123'
     ErrorResponse:
       type: object
       properties:
@@ -340,3 +307,8 @@ components:
           type: string
           description: Explanation of the error
           example: The provided request reference does not exist.
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the result response returned
+          example: '2022-06-28T15:39:42Z'
