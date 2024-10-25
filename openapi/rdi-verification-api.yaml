@@ -23,6 +23,10 @@ info:
     - Responses return JSON, except for downloads.
     - Text fields support UTF-8 encoding but certain special characters are not allowed.
   version: 1.0.0
+  x-logo:
+    url: 'https://reldyn.co/assets/images/logo.svg'
+    backgroundColor: '#ee0979'
+    altText: Reldyn
 servers:
   - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
     description: API server
