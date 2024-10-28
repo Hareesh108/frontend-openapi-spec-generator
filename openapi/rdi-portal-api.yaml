@@ -24,7 +24,7 @@ servers:
 tags:
   - name: Authentication
     description: API for obtaining OAuth 2.0 tokens using password grant.
-  - name: Organizations
+  - name: Admins
     description: The API allows you to view and manage the organizations.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
