@@ -37,7 +37,7 @@ paths:
       description: Get the verification requests
       operationId: getRequests
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: query
           name: q
@@ -146,7 +146,7 @@ paths:
       description: Get details of a request.
       operationId: getRequest
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: path
           name: request_id
@@ -174,7 +174,7 @@ paths:
       description: Get a list of all reasons.
       operationId: getReasons
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: header
           name: organization_id
@@ -279,7 +279,7 @@ paths:
       description: Create a new reason with the provided details.
       operationId: createReason
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: header
           name: organization_id
@@ -342,7 +342,7 @@ paths:
       description: Get details of a specific reason.
       operationId: getReasonById
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: path
           name: id
@@ -388,7 +388,7 @@ paths:
       description: Update the details of a specific reason.
       operationId: updateReason
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: path
           name: id
@@ -460,7 +460,7 @@ paths:
       description: Delete a specific reason.
       operationId: deleteReason
       tags:
-        - Portal
+        - Requests
       parameters:
         - in: path
           name: id
