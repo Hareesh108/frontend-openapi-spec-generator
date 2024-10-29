@@ -37,7 +37,7 @@ paths:
       description: Get the verification requests
       operationId: getRequests
       tags:
-        - Requests
+        - Portal
       parameters:
         - in: query
           name: q
@@ -62,7 +62,7 @@ paths:
               - `app`
               - `request_status`
               - `customer_reference`
-              - `organization_id`
+              - `client_id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -120,7 +120,7 @@ paths:
               - `app`
               - `request_status`
               - `customer_reference`
-              - `organization_id`
+              - `client_id`
               - `created_at`
               - `updated_at`
 
@@ -146,7 +146,7 @@ paths:
       description: Get details of a request.
       operationId: getRequest
       tags:
-        - Requests
+        - Portal
       parameters:
         - in: path
           name: request_id
@@ -164,6 +164,341 @@ paths:
                 $ref: '#/components/schemas/RequestDetailDto'
         '400':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/reasons:
+    get:
+      summary: Retrieve a list of reasons
+      description: Get a list of all reasons.
+      operationId: getReasons
+      tags:
+        - Portal
+      parameters:
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: "111111"
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+            
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `app`
+              - `organization_id`
+            
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+            
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`), provide a single value in the array.
+              - Accepted types for values include strings.
+          examples:
+            example1:
+              summary: Filter by reason name
+              value: '[{ "name": { "op": "like", "values": [ "Sample Reason" ] } }]'
+            example2:
+              summary: Filter by application name
+              value: '[{ "app": { "op": "eq", "values": [ "ONFIDO" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "name,asc"
+          description: |-
+            Format is `sortFieldName,direction`.
+            
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `app`
+            
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        '200':
+          description: A list of reasons with pagination details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reason'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    post:
+      summary: Create a new reason
+      description: Create a new reason with the provided details.
+      operationId: createReason
+      tags:
+        - Portal
+      parameters:
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: "111111"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the reason
+                  example: mule
+                description:
+                  type: string
+                  description: A detailed description of the reason
+                  example: This is used for sample purposes.
+                app:
+                  type: string
+                  description: The application associated with the reason
+                  example: ONFIDO
+              required:
+                - name
+                - app
+      responses:
+        '201':
+          description: Reason created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reason'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+
+  /api/v1/reasons/{id}:
+    get:
+      summary: Retrieve a reason by ID
+      description: Get details of a specific reason.
+      operationId: getReasonById
+      tags:
+        - Portal
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the reason
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: 111111
+      responses:
+        '200':
+          description: Reason details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reason'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    put:
+      summary: Update an existing reason
+      description: Update the details of a specific reason.
+      operationId: updateReason
+      tags:
+        - Portal
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the reason
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: "111111"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the reason
+                  example: mule
+                description:
+                  type: string
+                  description: A detailed description of the reason
+                  example: This is used for sample purposes.
+                app:
+                  type: string
+                  description: The application associated with the reason
+                  example: ONFIDO
+      responses:
+        '200':
+          description: Reason updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reason'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '404':
+          description: Reason not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+
+    delete:
+      summary: Delete a reason
+      description: Delete a specific reason.
+      operationId: deleteReason
+      tags:
+        - Portal
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the reason
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: "111111"
+      responses:
+        '204':
+          description: Reason deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '404':
+          description: Reason not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -208,10 +543,13 @@ components:
         metadata:
           type: object
           description: Dynamic request information sent based on app
-        organization_id:
+        client_id:
           type: string
-          description: Request belong to which organization
+          description: Request belong to which client
           example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+        client_name:
+          type: string
+          example: name for the client
 
     RequestDetailDto:
       type: object
@@ -250,9 +588,9 @@ components:
         metadata:
           type: object
           description: Dynamic request information sent based on app
-        organization_id:
+        client_id:
           type: string
-          description: Request belong to which organization
+          description: Request belong to which client
           example: "+6722406b-e823-40a0-b691-ea187a1e364d"
         request_executions:
           type: array
@@ -288,7 +626,7 @@ components:
               credentials:
                 type: object
                 description: Dynamic credential of the response
-              reason:
+              request_execution_reasons:
                 type: array
                 description: Reason on failed request
                 items:
@@ -300,6 +638,9 @@ components:
                     manual_review:
                       type: boolean
                       description: Indication request is manual/auto rejected
+        client_name:
+          type: string
+          example: name for the client
 
     RequestPaginatedResponse:
       type: object
@@ -349,3 +690,26 @@ components:
           type: string
           description: The endpoint path where the error occurred
           example: "/v1/requests"
+    Reason:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the reason
+          example: c2d35161-b8a9-47c8-88d2-7f6fcd29c561
+        name:
+          type: string
+          description: The name of the reason
+          example: mule
+        description:
+          type: string
+          description: A detailed description of the reason
+          example: Scam report on this account
+        organization_id:
+          type: string
+          description: Id of the organization
+          example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532
+        app:
+          type: string
+          description: Application of the organization
+          example: ONFIDO
