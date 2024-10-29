@@ -26,6 +26,10 @@ tags:
     description: API for obtaining OAuth 2.0 tokens using password grant.
   - name: Admins
     description: The API allows you to view and manage the organizations.
+  - name: Collaborations
+    description: The API allows you to view account's collaborations.
+  - name: Requests
+    description: The API allows you to view requests.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
     post:
@@ -444,10 +448,6 @@ paths:
                   example: >-
                     This organization focuses on providing technology solutions
                     for various industries.
-                org_logo_url:
-                  type: string
-                  description: Logo url for the organization
-                  example: 'https://s3.ap-south-1.amazonaws.com/logo.jpg'
       responses:
         '200':
           description: Organization updated successfully
@@ -583,10 +583,6 @@ paths:
                   example:
                     onfido.similarity_score_threshold: 0.8
                     onfido.similarity_checking_flag: false
-                app_api_key:
-                  type: string
-                  description: Api Key of the app
-                  example: api_sandbox.57u0VjSqHpL.8yyhfdGevnAEkRbLkBzufrSlEz6xTO8j
       responses:
         '200':
           description: Apps details updated successfully
@@ -856,6 +852,11 @@ paths:
                 access_scope:
                   description: Selected access scope of the user
                   type: string
+                  enum:
+                    - owner
+                    - creator
+                    - editor
+                    - viewer
                   example: viewer
                 account_id:
                   description: Account id of an existing user for linking account
@@ -925,6 +926,11 @@ paths:
                 access_scope:
                   description: Selected access scope of the user
                   type: string
+                  enum:
+                    - owner
+                    - creator
+                    - editor
+                    - viewer
                   example: viewer
       responses:
         '200':
@@ -1083,6 +1089,292 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /v1/collaborations:
+    get:
+      summary: Retrieve a list of organizations related to the currently logged-in user
+      description: >-
+        Retrieve a list of organizations related to the currently logged-in
+        user.
+      operationId: listCollaborations
+      tags:
+        - Collaborations
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: >-
+            Format is:
+
+            ```json
+
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+
+            ```
+
+
+            **Where:**
+
+            - **filterFieldName**: The field to filter by. Possible values
+            include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by organization email
+              value: '[{ "org_email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by organization name
+              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }]'
+            example3:
+              summary: Filter by active status
+              value: >-
+                [{ "org_status": { "op": "in","values": [ "ACTIVE", "INACTIVE" ]
+                } }]
+            example4:
+              summary: Filter by organization name and org_registration_no
+              value: >-
+                [{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }, {
+                "org_registration_no": { "op": "eq","values": [ "1234567890" ] }
+                }]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'org_name,desc'
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        '200':
+          description: A list of organizations with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaborationsPaginatedResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /v1/requests:
+    get:
+      summary: Requests listing
+      description: Get the verification requests
+      operationId: getRequests
+      tags:
+        - Requests
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: >-
+            Format is:
+
+            ```json
+
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+
+            ```
+
+
+            **Where:**
+
+            - **filterFieldName**: The field to filter by. Possible values
+            include:
+              - `id`
+              - `app`
+              - `request_status`
+              - `customer_reference`
+              - `organization_id`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by request app
+              value: '[{ "app": { "op": "eq","values": [ "ONFIDO" ] } }]'
+            example2:
+              summary: Filter by request status
+              value: >-
+                [{ "request_status": { "op": "in","values": [ "ACTIVE",
+                "INACTIVE" ] } }]
+            example3:
+              summary: Filter by app and request status
+              value: >-
+                [{ "app": { "op": "like","values": [ "ONFIDO" ] } }, { "status":
+                { "op": "eq","values": [ "ACTIVE" ] } }]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'org_name,desc'
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `app`
+              - `request_status`
+              - `customer_reference`
+              - `organization_id`
+              - `created_at`
+              - `updated_at`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        '200':
+          description: A list of request with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestPaginatedResponse'
+        '400':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+  '/v1/requests/{request_id}':
+    get:
+      summary: Retrieve request
+      description: Get details of a request.
+      operationId: getRequest
+      tags:
+        - Requests
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      responses:
+        '200':
+          description: Request details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestDetailDto'
+        '400':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
 components:
   schemas:
     Role:
@@ -1165,6 +1457,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrgAppDto'
+    CollaborationDto:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: Unique identifier for the organization
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        org_name:
+          type: string
+          description: Name of the organization
+          example: Bank Islam
+        access_scope:
+          type: string
+          description: Access rights granted to the user within the organization
+          enum:
+            - owner
+            - creator
+            - editor
+            - viewer
+          example: viewer
     OrgAppDto:
       type: object
       properties:
@@ -1273,6 +1585,11 @@ components:
         access_scope:
           type: string
           description: Access rights granted to the user within the organization
+          enum:
+            - owner
+            - creator
+            - editor
+            - viewer
           example: viewer
     GlobalErrorResponseDto:
       type: object
@@ -1298,6 +1615,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrganizationDto'
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    CollaborationsPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollaborationDto'
         number:
           type: integer
           example: 0
@@ -1384,6 +1732,182 @@ components:
         empty:
           type: boolean
           example: false
+    RequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the request
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        app:
+          type: string
+          description: Request app
+          example: ONFIDO
+        request_status:
+          type: string
+          description: Status of the request
+          enum:
+            - PROCESSING
+            - REVIEW
+            - APPROVED
+            - DECLINED
+            - ERROR
+            - EXPIRED
+          example: APPROVED
+        customer_reference:
+          type: string
+          description: Unique identifier from channel request
+          example: 6722406b-e823-40a0-b691-ea187a1e364d
+        metadata:
+          type: object
+          description: Dynamic request information sent based on app
+        organization_id:
+          type: string
+          description: Request belong to which organization
+          example: +6722406b-e823-40a0-b691-ea187a1e364d
+    RequestDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the request
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        app:
+          type: string
+          description: Request app
+          example: ONFIDO
+        request_status:
+          type: string
+          description: Status of the request
+          enum:
+            - PROCESSING
+            - REVIEW
+            - APPROVED
+            - DECLINED
+            - ERROR
+            - EXPIRED
+          example: APPROVED
+        customer_reference:
+          type: string
+          description: Unique identifier from channel request
+          example: 6722406b-e823-40a0-b691-ea187a1e364d
+        metadata:
+          type: object
+          description: Dynamic request information sent based on app
+        organization_id:
+          type: string
+          description: Request belong to which organization
+          example: +6722406b-e823-40a0-b691-ea187a1e364d
+        request_executions:
+          type: array
+          description: Request execution details
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier for the request execution
+                example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+              created_at:
+                type: string
+                format: date-time
+                example: '2021-02-01T12:34:56Z'
+              updated_at:
+                type: string
+                format: date-time
+                example: '2021-02-01T12:34:56Z'
+              execution_status:
+                type: string
+                description: 'Status for the request execution (PROCESSINS, SUCCESS, ERROR)'
+                example: PROCESSING
+              summary:
+                type: object
+                description: Dynamic basic result details of the response
+              result:
+                type: object
+                description: Dynamic full result details of the response
+              full_details_ready:
+                type: boolean
+                description: Indication of the readiness of result
+              credentials:
+                type: object
+                description: Dynamic credential of the response
+              reason:
+                type: array
+                description: Reason on failed request
+                items:
+                  type: object
+                  properties:
+                    reason:
+                      type: string
+                      description: Reason text on request rejected
+                    manual_review:
+                      type: boolean
+                      description: Indication request is manual/auto rejected
+    RequestPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestDto'
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    GlobalErrorResponseDto1:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Timestamp of the error occurred
+          example: '2024-10-07T16:51:24.595+08:00'
+        status:
+          type: integer
+          description: Error code indicating the issue
+        message:
+          type: string
+          description: Error message that describes the issue
+        path:
+          type: string
+          description: The endpoint path where the error occurred
+          example: /v1/requests
   securitySchemes:
     basicAuth:
       type: http
