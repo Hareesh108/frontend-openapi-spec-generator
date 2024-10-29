@@ -23,3 +23,7 @@ tags:
     description: API for obtaining OAuth 2.0 tokens using password grant.
   - name: Admins
     description: The API allows you to view and manage the organizations.
+  - name: Collaborations
+    description: The API allows you to view account's collaborations.
+  - name: Requests
+    description: The API allows you to view requests.

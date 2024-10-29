@@ -252,6 +252,10 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - org_name
+                - org_registration_no
+                - org_status
               properties:
                 org_name:
                   type: string
@@ -285,10 +289,6 @@ paths:
                   type: string
                   description: Note for the organization
                   example: This organization focuses on providing technology solutions for various industries.
-                org_logo_url:
-                  type: string
-                  description: Logo url for the organization
-                  example: https://s3.ap-south-1.amazonaws.com/logo.jpg
       responses:
         "200":
           description: Organization updated successfully
@@ -424,10 +424,6 @@ paths:
                   example:
                     onfido.similarity_score_threshold: 0.8
                     onfido.similarity_checking_flag: false
-                app_api_key:
-                  type: string
-                  description: Api Key of the app
-                  example: api_sandbox.57u0VjSqHpL.8yyhfdGevnAEkRbLkBzufrSlEz6xTO8j
       responses:
         "200":
           description: Apps details updated successfully
@@ -690,6 +686,11 @@ paths:
                 access_scope:
                   description: Selected access scope of the user
                   type: string
+                  enum:
+                    - owner
+                    - creator
+                    - editor
+                    - viewer
                   example: "viewer"
                 account_id:
                   description: Account id of an existing user for linking account
@@ -759,6 +760,11 @@ paths:
                 access_scope:
                   description: Selected access scope of the user
                   type: string
+                  enum:
+                    - owner
+                    - creator
+                    - editor
+                    - viewer
                   example: "viewer"
       responses:
         "200":
@@ -911,6 +917,132 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /v1/collaborations:
+    get:
+      summary: Retrieve a list of organizations related to the currently logged-in user
+      description: Retrieve a list of organizations related to the currently logged-in user.
+      operationId: listCollaborations
+      tags:
+        - Collaborations
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by organization email
+              value: '[{ "org_email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by organization name
+              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }]'
+            example3:
+              summary: Filter by active status
+              value: '[{ "org_status": { "op": "in","values": [ "ACTIVE", "INACTIVE" ] } }]'
+            example4:
+              summary: Filter by organization name and org_registration_no
+              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }, { "org_registration_no": { "op": "eq","values": [ "1234567890" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "org_name,desc"
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `org_name`
+              - `org_registration_no`
+              - `org_status`
+              - `org_contact_no`
+              - `org_contact_name`
+              - `org_email`
+              - `note`
+              - `org_logo_url`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        "200":
+          description: A list of organizations with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollaborationsPaginatedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
 components:
   schemas:
     OrganizationDto:
@@ -980,6 +1112,26 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrgAppDto"
+    CollaborationDto:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: Unique identifier for the organization
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        org_name:
+          type: string
+          description: Name of the organization
+          example: Bank Islam
+        access_scope:
+          type: string
+          description: Access rights granted to the user within the organization
+          enum:
+            - owner
+            - creator
+            - editor
+            - viewer
+          example: viewer
     OrgAppDto:
       type: object
       properties:
@@ -1013,41 +1165,6 @@ components:
           example:
             onfido.similarity_score_threshold: 0.8
             onfido.similarity_checking_flag: false
-        app_api_key:
-          type: string
-          description: Api Key of the app
-          example: api_sandbox.57u0VjSqHpL.8yyhfdGevnAEkRbLkBzufrSlEz6xTO8j
-    OrgClientDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the client
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        created_by:
-          type: string
-          description: Name of the user that created this client
-          example: Foo
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_by:
-          type: string
-          description: Name of the user that last updated this client
-          example: Foo
-        name:
-          type: string
-          description: Name of the client
-          example: Be U
-        note:
-          type: string
-          description: Note for the organization
-          example: Be U client
     AccountDto:
       type: object
       properties:
@@ -1123,6 +1240,11 @@ components:
         access_scope:
           type: string
           description: Access rights granted to the user within the organization
+          enum:
+            - owner
+            - creator
+            - editor
+            - viewer
           example: viewer
     GlobalErrorResponseDto:
       type: object
@@ -1148,6 +1270,37 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrganizationDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    CollaborationsPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollaborationDto"
         number:
           type: integer
           example: 0

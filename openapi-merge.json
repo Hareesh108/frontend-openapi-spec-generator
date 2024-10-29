@@ -8,6 +8,9 @@
         },
         {
             "inputFile": "./openapi/paths/rdi-account-api.yaml"
+        },
+        {
+            "inputFile": "./openapi/paths/rdi-verification-portal-api.yaml"
         }
     ],
     "output": "./openapi/rdi-portal-api.yaml"
