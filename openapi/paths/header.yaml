@@ -16,7 +16,7 @@ info:
     backgroundColor: "#ee0979"
     altText: "Reldyn"
 servers:
-  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
+  - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
     description: Development server
 tags:
   - name: Authentication

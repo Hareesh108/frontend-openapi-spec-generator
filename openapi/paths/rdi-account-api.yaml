@@ -4,7 +4,7 @@ info:
   description: API for managing organizations.
   version: 1.0.0
 servers:
-  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
+  - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
 paths:
   /v1/admins/organizations:
     post:

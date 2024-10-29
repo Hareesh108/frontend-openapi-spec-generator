@@ -4,7 +4,7 @@ info:
   description: API for obtaining OAuth 2.0 tokens using password grant.
   version: 1.0.0
 servers:
-  - url: https://bbr2xbhs2f.execute-api.ap-south-1.amazonaws.com/api
+  - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
     description: Production server
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
