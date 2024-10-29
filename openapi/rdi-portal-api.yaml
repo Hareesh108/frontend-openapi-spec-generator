@@ -1257,6 +1257,13 @@ paths:
       tags:
         - Requests
       parameters:
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: '111111'
         - in: query
           name: q
           schema:
@@ -1383,6 +1390,13 @@ paths:
             type: string
           description: Unique reference of the request
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: header
+          name: organization_id
+          required: true
+          schema:
+            type: string
+          description: The organization ID
+          example: '111111'
       responses:
         '200':
           description: Request details retrieved successfully
