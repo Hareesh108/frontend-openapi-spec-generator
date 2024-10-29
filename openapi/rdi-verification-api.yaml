@@ -35,7 +35,7 @@ servers:
         default: TENANT_NAME
         description: Replace with the tenant name in your Identity Platform Dashboard URL.
 paths:
-  /v1/verifications:
+  /api/v1/verifications:
     post:
       summary: Create a verification request
       description: |
@@ -72,7 +72,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /v1/verifications/{request_reference}:
+  /api/v1/verifications/{request_reference}:
     get:
       summary: Retrieve verification status
       description: Get the current status and details of a verification request.
@@ -117,7 +117,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /v1/verifications/{request_reference}/download:
+  /api/v1/verifications/{request_reference}/download:
     post:
       summary: Download a document
       description: |

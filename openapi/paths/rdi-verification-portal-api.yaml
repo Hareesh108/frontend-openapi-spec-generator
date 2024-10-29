@@ -31,7 +31,7 @@ servers:
         default: TENANT_NAME
         description: Replace with the tenant name in your Identity Platform Dashboard URL.
 paths:
-  /v1/requests:
+  /api/v1/requests:
     get:
       summary: Requests listing
       description: Get the verification requests
@@ -140,7 +140,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/requests/{request_id}:
+  /api/v1/requests/{request_id}:
     get:
       summary: Retrieve request
       description: Get details of a request.

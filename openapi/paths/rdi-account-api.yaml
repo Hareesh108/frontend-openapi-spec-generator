@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
 paths:
-  /v1/admins/organizations:
+  /api/v1/admins/organizations:
     post:
       summary: Create a new organization
       description: Creates a new organization.
@@ -203,7 +203,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}:
+  /api/v1/admins/organizations/{organization_id}:
     get:
       summary: Retrieve a single organization
       description: Retrieves details of a single organization by its ID.
@@ -331,7 +331,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}/apps:
+  /api/v1/admins/organizations/{organization_id}/apps:
     post:
       summary: Install the apps
       description: Install the apps.
@@ -388,7 +388,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}/apps/{app_id}:
+  /api/v1/admins/organizations/{organization_id}/apps/{app_id}:
     put:
       summary: Update apps details
       description: Updates apps details
@@ -467,7 +467,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}/images:
+  /api/v1/admins/organizations/{organization_id}/images:
     post:
       summary: Upload organization's logo
       description: Upload organization's logo
@@ -535,7 +535,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}/collaborators:
+  /api/v1/admins/organizations/{organization_id}/collaborators:
     get:
       summary: Retrieve a list of collaborators under the organization
       description: Retrieve a list of collaborators under the organization.
@@ -715,7 +715,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/organizations/{organization_id}/collaborators/{account_id}:
+  /api/v1/admins/organizations/{organization_id}/collaborators/{account_id}:
     put:
       summary: Update account details
       description: Update account details.
@@ -815,7 +815,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/admins/accounts:
+  /api/v1/admins/accounts:
     get:
       summary: Retrieve a list of accounts
       description: Retrieve a list of accounts.
@@ -917,7 +917,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /v1/collaborations:
+  /api/v1/collaborations:
     get:
       summary: Retrieve a list of organizations related to the currently logged-in user
       description: Retrieve a list of organizations related to the currently logged-in user.
@@ -1043,7 +1043,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/me:
+    get:
+      summary: Retrieves the authenticated user's information
+      operationId: getUser
+      tags:
+        - Admins
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetail"
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     OrganizationDto:
       type: object
@@ -1387,3 +1413,19 @@ components:
         empty:
           type: boolean
           example: false
+    UserDetail:
+      builder:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the user
+          example: Kent
+        email:
+          type: string
+          description: Email of the user
+          example: kent@reldyn.co
+        role:
+          type: string
+          description: Role of the user (admin/org_user)
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
