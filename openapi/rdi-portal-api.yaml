@@ -1258,7 +1258,7 @@ paths:
         - Requests
       parameters:
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1391,7 +1391,7 @@ paths:
           description: Unique reference of the request
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1419,7 +1419,7 @@ paths:
         - Requests
       parameters:
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1530,7 +1530,7 @@ paths:
         - Requests
       parameters:
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1599,7 +1599,7 @@ paths:
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1645,7 +1645,7 @@ paths:
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
@@ -1716,7 +1716,7 @@ paths:
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: organization_id
+          name: orgid
           required: true
           schema:
             type: string
