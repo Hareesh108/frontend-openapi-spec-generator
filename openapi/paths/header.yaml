@@ -27,3 +27,5 @@ tags:
     description: The API allows you to view account's collaborations.
   - name: Requests
     description: The API allows you to view requests.
+  - name: Reasons
+    description: The API allows you to view and manage reasons.

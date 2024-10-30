@@ -30,6 +30,8 @@ tags:
     description: The API allows you to view account's collaborations.
   - name: Requests
     description: The API allows you to view requests.
+  - name: Reasons
+    description: The API allows you to view and manage reasons.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
     post:
@@ -1098,130 +1100,15 @@ paths:
       operationId: listCollaborations
       tags:
         - Collaborations
-      parameters:
-        - in: query
-          name: q
-          schema:
-            type: string
-          description: >-
-            Format is:
-
-            ```json
-
-            [
-              {
-                "filterFieldName": {
-                  "op": "operator",
-                  "values": ["value"]
-                }
-              }
-            ]
-
-            ```
-
-
-            **Where:**
-
-            - **filterFieldName**: The field to filter by. Possible values
-            include:
-              - `id`
-              - `org_name`
-              - `org_registration_no`
-              - `org_status`
-              - `org_contact_no`
-              - `org_contact_name`
-              - `org_email`
-              - `note`
-              - `org_logo_url`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **operator**: The operation to perform. Possible options are:
-              - `eq`: Equals
-              - `!eq`: Not equal
-              - `in`: In
-              - `!in`: Not in
-              - `like`: Like
-              - `!like`: Not like
-              - `gt`: Greater than
-              - `gte`: Greater than or equal to
-              - `lt`: Less than
-              - `lte`: Less than or equal to
-              - `btw`: Between
-              - `!btw`: Not between
-
-            - **value**: The value(s) used for filtering.
-              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
-              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
-              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
-          examples:
-            example1:
-              summary: Filter by organization email
-              value: '[{ "org_email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
-            example2:
-              summary: Filter by organization name
-              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }]'
-            example3:
-              summary: Filter by active status
-              value: >-
-                [{ "org_status": { "op": "in","values": [ "ACTIVE", "INACTIVE" ]
-                } }]
-            example4:
-              summary: Filter by organization name and org_registration_no
-              value: >-
-                [{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }, {
-                "org_registration_no": { "op": "eq","values": [ "1234567890" ] }
-                }]
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 0
-          description: The page number to retrieve (0-based)
-        - in: query
-          name: size
-          schema:
-            type: integer
-            default: 20
-          description: The number of items to retrieve per page
-        - in: query
-          name: sort
-          schema:
-            type: array
-            items:
-              type: string
-              example: 'org_name,desc'
-          description: |-
-            Format is `sortFieldName,direction`.
-
-            **Where:**
-            - **sortFieldName**: The field to sort by. Possible values include:
-              - `id`
-              - `org_name`
-              - `org_registration_no`
-              - `org_status`
-              - `org_contact_no`
-              - `org_contact_name`
-              - `org_email`
-              - `note`
-              - `org_logo_url`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **direction**: The sorting order. Possible values are:
-              - `asc`: Sort in ascending order
-              - `desc`: Sort in descending order
       responses:
         '200':
           description: A list of organizations with pagination details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollaborationsPaginatedResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollaborationDto'
         '500':
           description: Internal server error
           content:
@@ -1233,7 +1120,7 @@ paths:
       summary: Retrieves the authenticated user's information
       operationId: getUser
       tags:
-        - Admins
+        - Authentication
       security:
         - BearerAuth: []
       responses:
@@ -1416,7 +1303,7 @@ paths:
       description: Get a list of all reasons.
       operationId: getReasons
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: header
           name: orgid
@@ -1527,7 +1414,7 @@ paths:
       description: Create a new reason with the provided details.
       operationId: createReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: header
           name: orgid
@@ -1589,7 +1476,7 @@ paths:
       description: Get details of a specific reason.
       operationId: getReasonById
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
@@ -1635,7 +1522,7 @@ paths:
       description: Update the details of a specific reason.
       operationId: updateReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
@@ -1706,7 +1593,7 @@ paths:
       description: Delete a specific reason.
       operationId: deleteReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
@@ -1851,6 +1738,11 @@ components:
             - editor
             - viewer
           example: viewer
+        apps:
+          type: array
+          items:
+            type: string
+            example: ONFIDO
     OrgAppDto:
       type: object
       properties:
@@ -2013,37 +1905,6 @@ components:
         empty:
           type: boolean
           example: false
-    CollaborationsPaginatedResponse:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/CollaborationDto'
-        number:
-          type: integer
-          example: 0
-        size:
-          type: integer
-          example: 20
-        total_elements:
-          type: integer
-          example: 1
-        last:
-          type: boolean
-          example: true
-        first:
-          type: boolean
-          example: true
-        total_pages:
-          type: integer
-          example: 1
-        number_of_elements:
-          type: integer
-          example: 1
-        empty:
-          type: boolean
-          example: false
     AccountsPaginatedResponse:
       type: object
       properties:
@@ -2107,7 +1968,6 @@ components:
           type: boolean
           example: false
     UserDetail:
-      builder: null
       type: object
       properties:
         name:

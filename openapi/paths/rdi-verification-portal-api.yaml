@@ -188,7 +188,7 @@ paths:
       description: Get a list of all reasons.
       operationId: getReasons
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: header
           name: orgid
@@ -293,7 +293,7 @@ paths:
       description: Create a new reason with the provided details.
       operationId: createReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: header
           name: orgid
@@ -356,7 +356,7 @@ paths:
       description: Get details of a specific reason.
       operationId: getReasonById
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
@@ -402,7 +402,7 @@ paths:
       description: Update the details of a specific reason.
       operationId: updateReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
@@ -474,7 +474,7 @@ paths:
       description: Delete a specific reason.
       operationId: deleteReason
       tags:
-        - Requests
+        - Reasons
       parameters:
         - in: path
           name: id
