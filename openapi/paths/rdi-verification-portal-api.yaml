@@ -24,7 +24,7 @@ info:
     - Text fields support UTF-8 encoding but certain special characters are not allowed.
   version: 1.0.0
 servers:
-  - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
+  - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/platform
     description: API server
     variables:
       tenant_name:
@@ -38,6 +38,8 @@ paths:
       operationId: getRequests
       tags:
         - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: header
           name: orgid
@@ -154,6 +156,8 @@ paths:
       operationId: getRequest
       tags:
         - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: request_id
@@ -188,7 +192,9 @@ paths:
       description: Get a list of all reasons.
       operationId: getReasons
       tags:
-        - Reasons
+        - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: header
           name: orgid
@@ -293,7 +299,9 @@ paths:
       description: Create a new reason with the provided details.
       operationId: createReason
       tags:
-        - Reasons
+        - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: header
           name: orgid
@@ -356,7 +364,9 @@ paths:
       description: Get details of a specific reason.
       operationId: getReasonById
       tags:
-        - Reasons
+        - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -402,7 +412,9 @@ paths:
       description: Update the details of a specific reason.
       operationId: updateReason
       tags:
-        - Reasons
+        - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -474,7 +486,9 @@ paths:
       description: Delete a specific reason.
       operationId: deleteReason
       tags:
-        - Reasons
+        - Requests
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -519,6 +533,11 @@ paths:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     RequestDto:
       type: object

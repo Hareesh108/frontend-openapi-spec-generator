@@ -13,6 +13,8 @@ paths:
       operationId: createOrganization
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       requestBody:
         description: Organization creation details
         required: true
@@ -84,6 +86,8 @@ paths:
       operationId: listOrganizations
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
           name: q
@@ -210,6 +214,8 @@ paths:
       operationId: getOrganization
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -237,6 +243,8 @@ paths:
       operationId: updateOrganization
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -314,6 +322,8 @@ paths:
       operationId: deleteOrganization
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -338,6 +348,8 @@ paths:
       operationId: installApps
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -395,6 +407,8 @@ paths:
       operationId: updateApps
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -443,6 +457,8 @@ paths:
       operationId: uninstallApps
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -474,6 +490,8 @@ paths:
       operationId: uploadOrganizationLogo
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -518,6 +536,8 @@ paths:
       operationId: deleteOrganizationLogo
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -542,6 +562,8 @@ paths:
       operationId: listCollaborators
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -650,6 +672,8 @@ paths:
       operationId: createAccount
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -722,6 +746,8 @@ paths:
       operationId: updateAccount
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -791,6 +817,8 @@ paths:
       operationId: deleteAccount
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: organization_id
@@ -822,6 +850,8 @@ paths:
       operationId: listAccounts
       tags:
         - Admins
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
           name: q
@@ -924,6 +954,8 @@ paths:
       operationId: listCollaborations
       tags:
         - Collaborations
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: A list of organizations with pagination details
@@ -946,7 +978,7 @@ paths:
       tags:
         - Authentication
       security:
-        - BearerAuth: []
+        - bearerAuth: []
       responses:
         200:
           description: Successful response
@@ -962,7 +994,7 @@ paths:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
 components:
   securitySchemes:
-    BearerAuth:
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
