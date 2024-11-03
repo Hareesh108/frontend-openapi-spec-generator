@@ -21,11 +21,35 @@ servers:
 tags:
   - name: Authentication
     description: API for obtaining OAuth 2.0 tokens using password grant.
-  - name: Admins
+  - name: Organization
     description: The API allows you to view and manage the organizations.
-  - name: Collaborations
+  - name: Application
+    description: The API allows you to view and manage the applications.
+  - name: Collaboration
     description: The API allows you to view account's collaborations.
-  - name: Requests
+  - name: Request
     description: The API allows you to view requests.
-  - name: Reasons
+  - name: Reason
     description: The API allows you to view and manage reasons.
+  - name: Collaborator
+    description: The API allows you to view and manage collaborators.
+  - name: Account
+    description: The API allows you to view and manage accounts.
+  - name: Channel
+    description: The API allows you to view and manage channels.
+x-tagGroups:
+  - name: Authentication
+    tags:
+      - Authentication
+  - name: Admin
+    tags:
+      - Organization
+      - Collaborator
+      - Application
+      - Account
+  - name: Org User
+    tags:
+      - Collaboration
+      - Channel
+      - Request
+      - Reason

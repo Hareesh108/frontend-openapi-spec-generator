@@ -12,7 +12,7 @@ paths:
       description: Creates a new organization.
       operationId: createOrganization
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       requestBody:
@@ -85,7 +85,7 @@ paths:
       description: Retrieves a list of all organizations.
       operationId: listOrganizations
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -213,7 +213,7 @@ paths:
       description: Retrieves details of a single organization by its ID.
       operationId: getOrganization
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -242,7 +242,7 @@ paths:
       description: Updates details of an existing organization.
       operationId: updateOrganization
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -321,7 +321,7 @@ paths:
       description: Deletes an existing organization by id.
       operationId: deleteOrganization
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -347,7 +347,7 @@ paths:
       description: Install the apps.
       operationId: installApps
       tags:
-        - Admins
+        - Application
       security:
         - bearerAuth: []
       parameters:
@@ -406,7 +406,7 @@ paths:
       description: Updates apps details
       operationId: updateApps
       tags:
-        - Admins
+        - Application
       security:
         - bearerAuth: []
       parameters:
@@ -456,7 +456,7 @@ paths:
       description: Uninstalls apps.
       operationId: uninstallApps
       tags:
-        - Admins
+        - Application
       security:
         - bearerAuth: []
       parameters:
@@ -489,7 +489,7 @@ paths:
       description: Upload organization's logo
       operationId: uploadOrganizationLogo
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -535,7 +535,7 @@ paths:
       description: Delete organization's logo
       operationId: deleteOrganizationLogo
       tags:
-        - Admins
+        - Organization
       security:
         - bearerAuth: []
       parameters:
@@ -561,7 +561,7 @@ paths:
       description: Retrieve a list of collaborators under the organization.
       operationId: listCollaborators
       tags:
-        - Admins
+        - Collaborator
       security:
         - bearerAuth: []
       parameters:
@@ -671,7 +671,7 @@ paths:
       description: Creates a new account / Link an existing account.
       operationId: createAccount
       tags:
-        - Admins
+        - Collaborator
       security:
         - bearerAuth: []
       parameters:
@@ -745,7 +745,7 @@ paths:
       description: Update account details.
       operationId: updateAccount
       tags:
-        - Admins
+        - Collaborator
       security:
         - bearerAuth: []
       parameters:
@@ -816,7 +816,7 @@ paths:
       description: Delete account from organization.
       operationId: deleteAccount
       tags:
-        - Admins
+        - Collaborator
       security:
         - bearerAuth: []
       parameters:
@@ -849,7 +849,7 @@ paths:
       description: Retrieve a list of accounts.
       operationId: listAccounts
       tags:
-        - Admins
+        - Account
       security:
         - bearerAuth: []
       parameters:
@@ -953,7 +953,7 @@ paths:
       description: Retrieve a list of organizations related to the currently logged-in user.
       operationId: listCollaborations
       tags:
-        - Collaborations
+        - Collaboration
       security:
         - bearerAuth: []
       responses:
