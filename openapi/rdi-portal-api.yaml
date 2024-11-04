@@ -2994,6 +2994,14 @@ components:
           type: string
           description: The unique identifier for the reason
           example: c2d35161-b8a9-47c8-88d2-7f6fcd29c561
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
         name:
           type: string
           description: The name of the reason
