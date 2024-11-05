@@ -1816,12 +1816,12 @@ paths:
               properties:
                 name:
                   type: string
-                  description: The name of the channel
-                  example: test-channel
+                  description: Name of the Channel
+                  example: Ekyc channel
                 note:
                   type: string
-                  description: A note about channel
-                  example: This is used for sample purposes.
+                  description: Note about the Channel
+                  example: Channel for performing ekyc
       responses:
         '201':
           description: Channel created successfully
@@ -1918,12 +1918,12 @@ paths:
               properties:
                 name:
                   type: string
-                  description: The name of the channel
-                  example: test-channel
+                  description: Name of the Channel
+                  example: Ekyc channel
                 note:
                   type: string
-                  description: A note about channel
-                  example: This is used for sample purposes.
+                  description: Note about the Channel
+                  example: Channel for performing ekyc
       responses:
         '200':
           description: Channel updated successfully
@@ -2236,7 +2236,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ChannelKeyDto'
+                  $ref: '#/components/schemas/ChannelAppDto'
         '400':
           description: Invalid request parameters
           content:
@@ -2292,6 +2292,7 @@ paths:
                 app_api_key:
                   type: string
                   description: Api key of the app
+                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
       responses:
         '201':
           description: App installed for channel successfully
@@ -2398,6 +2399,7 @@ paths:
                 app_api_key:
                   type: string
                   description: Api key of the app
+                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
                 app_properties:
                   description: Custom properties of the app
                   type: object
@@ -3098,14 +3100,11 @@ components:
         name:
           type: string
           description: Name of the Channel
+          example: Ekyc channel
         note:
           type: string
           description: Note about the Channel
-        keys:
-          type: array
-          description: List of OrgClientKey associated with the Channel
-          items:
-            $ref: '#/components/schemas/ChannelKeyDto'
+          example: Channel for performing ekyc
         apps:
           type: array
           description: List of OrgClientApp associated with the Channel
@@ -3128,7 +3127,9 @@ components:
           example: '2021-02-01T12:34:56Z'
         api_key:
           type: string
-          description: Name of the key
+          description: Key generated for channel
+          example: >-
+            eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NmYwOGEyOS1lNmMxLTQzMzYtOWZmYy05MjgzZjYwYWUyZDIifQ.YxO2390uoSX566s6z2PZnNy10VPe5gAaWKEgaxFypZ4
         expires_at:
           type: string
           format: date-time
@@ -3151,12 +3152,16 @@ components:
         app_name:
           type: string
           description: Name of the app
+          example: ONFIDO
         app_api_key:
           type: string
           description: Api Key of the app
+          example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
         app_properties:
-          type: string
-          description: Description of the app
+          type: object
+          description: Custom properties of the app
+          example:
+            policy.onfido.similarity_score_threshold: 0.8
   securitySchemes:
     basicAuth:
       type: http
