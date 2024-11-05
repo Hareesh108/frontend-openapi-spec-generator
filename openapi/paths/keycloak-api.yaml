@@ -9,9 +9,11 @@ servers:
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
     post:
-      summary: Generate an access token
+      summary: Generate an access token or refresh tokens
       description: |
-        This endpoint issues an OAuth 2.0 token using the password grant type.
+        This endpoint issues an OAuth 2.0 token. The behavior of the endpoint depends on the `grant_type`:
+        - Use `grant_type=password` to obtain an access token.
+        - Use `grant_type=refresh_token` to obtain a new set of tokens with an existing refresh token.
       operationId: generateAccessToken
       tags:
         - Authentication
@@ -21,23 +23,9 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               type: object
-              properties:
-                grant_type:
-                  type: string
-                  description: The OAuth 2.0 grant type (should be "password").
-                  example: password
-                username:
-                  type: string
-                  description: The user's username.
-                  example: johndoe
-                password:
-                  type: string
-                  description: The user's password.
-                  example: secret_password
-              required:
-                - grant_type
-                - username
-                - password
+              oneOf:
+                - $ref: '#/components/schemas/PasswordGrant'
+                - $ref: '#/components/schemas/RefreshTokenGrant'
       responses:
         "200":
           description: Successful response with OAuth 2.0 tokens.
@@ -83,48 +71,6 @@ paths:
           description: Unauthorized (e.g., invalid client credentials).
       security:
         - basicAuth: []
-  /auth/realms/rdi-portal/protocol/openid-connect/userinfo:
-    get:
-      summary: Retrieve user info
-      description: |
-        This endpoint retrieves user information such as subject ID, email verification status, and preferred username using a Bearer token.
-      operationId: retrieveUserInfo
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: Successful response with user info.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  sub:
-                    type: string
-                    description: The unique identifier for the user (subject).
-                    example: 922301cb-aec5-4cfd-bb08-94adef4f51ed
-                  email_verified:
-                    type: boolean
-                    description: Indicates if the user's email is verified.
-                    example: false
-                  realm_access:
-                    type: object
-                    properties:
-                      roles:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Role"
-                        description: Roles assigned to the user within the realm.
-                        example:
-                          - admin
-                  preferred_username:
-                    type: string
-                    description: The user's preferred username.
-                    example: admin@reldyn.co
-        "401":
-          description: Unauthorized access (e.g., missing or invalid Bearer token).
-      security:
-        - bearerAuth: []
 
 components:
   schemas:
@@ -137,6 +83,41 @@ components:
         - editor
         - owner
       description: Possible roles assigned to the user.
+    PasswordGrant:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          description: |
+            The OAuth 2.0 grant type. Use `"password"` for obtaining a new access token.
+          enum:
+            - password
+        username:
+          type: string
+          description: The user's username.
+        password:
+          type: string
+          description: The user's password.
+      required:
+        - grant_type
+        - username
+        - password
+    RefreshTokenGrant:
+      type: object
+      description: "Grant type: **Refresh Token**. Required parameter: `refresh_token`."
+      properties:
+        grant_type:
+          type: string
+          description: |
+            The OAuth 2.0 grant type. Use `"refresh_token"` for obtaining a new set of tokens with an existing refresh token.
+          enum:
+            - refresh_token
+        refresh_token:
+          type: string
+          description: The refresh token obtained from a previous authorization request.
+      required:
+        - grant_type
+        - refresh_token
   securitySchemes:
     basicAuth:
       type: http
