@@ -61,9 +61,50 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               type: object
-              oneOf:
-                - $ref: '#/components/schemas/PasswordGrant'
-                - $ref: '#/components/schemas/RefreshTokenGrant'
+              properties:
+                grant_type:
+                  type: string
+                  description: >
+                    The OAuth 2.0 grant type. Use `"password"` or
+                    `"refresh_token"` for obtaining a new access token.
+                  enum:
+                    - password
+                    - refresh_token
+                username:
+                  type: string
+                  description: >-
+                    The user's username. Required when `grant_type=password` is
+                    used.
+                password:
+                  type: string
+                  description: >-
+                    The user's password. Required when `grant_type=password` is
+                    used.
+                refresh_token:
+                  type: string
+                  description: >-
+                    The refresh token. Required when `grant_type=refresh_token`
+                    is used.
+              required:
+                - grant_type
+              allOf:
+                - if:
+                    properties:
+                      grant_type:
+                        enum:
+                          - password
+                  then:
+                    required:
+                      - username
+                      - password
+                - if:
+                    properties:
+                      grant_type:
+                        enum:
+                          - refresh_token
+                  then:
+                    required:
+                      - refresh_token
       responses:
         '200':
           description: Successful response with OAuth 2.0 tokens.
@@ -2390,43 +2431,6 @@ components:
         - editor
         - owner
       description: Possible roles assigned to the user.
-    PasswordGrant:
-      type: object
-      properties:
-        grant_type:
-          type: string
-          description: >
-            The OAuth 2.0 grant type. Use `"password"` for obtaining a new
-            access token.
-          enum:
-            - password
-        username:
-          type: string
-          description: The user's username.
-        password:
-          type: string
-          description: The user's password.
-      required:
-        - grant_type
-        - username
-        - password
-    RefreshTokenGrant:
-      type: object
-      description: 'Grant type: **Refresh Token**. Required parameter: `refresh_token`.'
-      properties:
-        grant_type:
-          type: string
-          description: >
-            The OAuth 2.0 grant type. Use `"refresh_token"` for obtaining a new
-            set of tokens with an existing refresh token.
-          enum:
-            - refresh_token
-        refresh_token:
-          type: string
-          description: The refresh token obtained from a previous authorization request.
-      required:
-        - grant_type
-        - refresh_token
     OrganizationDto:
       type: object
       properties:
