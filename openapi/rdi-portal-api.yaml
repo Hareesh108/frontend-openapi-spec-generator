@@ -87,24 +87,6 @@ paths:
                     is used.
               required:
                 - grant_type
-              allOf:
-                - if:
-                    properties:
-                      grant_type:
-                        enum:
-                          - password
-                  then:
-                    required:
-                      - username
-                      - password
-                - if:
-                    properties:
-                      grant_type:
-                        enum:
-                          - refresh_token
-                  then:
-                    required:
-                      - refresh_token
       responses:
         '200':
           description: Successful response with OAuth 2.0 tokens.
