@@ -40,15 +40,12 @@ paths:
       summary: Create a verification request
       description: |
         Creates a new verification request using customer details and metadata.
-        Requires a Bearer token for authorization.
       operationId: createVerification
       tags:
         - Verification
-      security:
-        - BearerAuth: []
       parameters:
         - in: header
-          name: Authorization
+          name: X-API-KEY
           required: true
           schema:
             type: string
@@ -79,11 +76,9 @@ paths:
       operationId: getVerification
       tags:
         - Verification
-      security:
-        - BearerAuth: []
       parameters:
         - in: header
-          name: Authorization
+          name: X-API-KEY
           required: true
           schema:
             type: string
@@ -125,8 +120,6 @@ paths:
       operationId: downloadDocument
       tags:
         - Verification
-      security:
-        - BearerAuth: []
       parameters:
         - in: path
           name: request_reference
@@ -157,12 +150,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
     VerificationRequest:
       type: object
@@ -193,7 +180,7 @@ components:
               type: object
               description: Additional custom input fields for the workflow, dynamically populated and sent to Onfido if not empty
               additionalProperties:
-                type: string
+                type: object
               example:
                 full_name: "Mohammed Faris"
                 id_number: "860303-10-7491"
@@ -239,6 +226,7 @@ components:
                   - ONFIDO_SDK_TOKEN
                   - ONFIDO_WORKFLOW_RUN_ID
                   - ONFIDO_APPLICANT_ID
+                  - ONFIDO_WEB_URL
                 example: ONFIDO_SDK_TOKEN
               value:
                 type: string
