@@ -618,9 +618,9 @@ paths:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
   '/api/v1/channels/{channel_id}/apps':
     get:
-      summary: Get all installed apps for channel
-      description: Get all installed apps for channel.
-      operationId: getInstalledChannelApps
+      summary: List all installed apps for channel
+      description: List all installed apps for channel.
+      operationId: listInstalledChannelApps
       tags:
         - Channel
       security:
@@ -1487,6 +1487,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/apps:
+    get:
+      summary: List all available apps
+      description: List all available apps.
+      operationId: listApps
+      tags:
+        - Configuration
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of available apps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppDto'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
   /api/v1/me:
     get:
       summary: Retrieves the authenticated user's information
@@ -2189,10 +2219,6 @@ components:
           type: string
           description: Logo url of the app
           example: 'https://s3.ap-south-1.amazonaws.com/logo.jpg'
-        service_name:
-          type: string
-          description: Service name of the app
-          example: rdi-onfido
     ChannelDto:
       type: object
       properties:
@@ -2348,8 +2374,7 @@ components:
         apps:
           type: array
           items:
-            type: string
-            example: ONFIDO
+            $ref: '#/components/schemas/AppDto'
     GlobalErrorResponseDto:
       type: object
       properties:
@@ -2799,3 +2824,6 @@ x-tagGroups:
       - Profile
       - Request
       - Reason
+  - name: Common
+    tags:
+      - Configuration
