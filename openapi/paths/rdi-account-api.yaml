@@ -1,93 +1,20 @@
 openapi: 3.0.3
 info:
-  title: Organization Management API
-  description: API for managing organizations.
+  title: Channel Management API
+  description: API for managing channels.
   version: 1.0.0
 servers:
   - url: https://5yhs323cfd.execute-api.ap-south-1.amazonaws.com/api
 paths:
-  /api/v1/admins/organizations:
-    post:
-      summary: Create a new organization
-      description: Creates a new organization.
-      operationId: createOrganization
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Organization creation details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - org_name
-                - org_registration_no
-              properties:
-                org_name:
-                  type: string
-                  description: Name of the organization
-                  example: Bank Islam
-                org_registration_no:
-                  type: string
-                  description: Registration no of the organization
-                  example: 1234567890
-                org_contact_no:
-                  type: string
-                  description: Contact phone number for the organization
-                  example: "+601234567890"
-                org_contact_name:
-                  type: string
-                  description: Contact name for the organization
-                  example: Darren
-                org_email:
-                  type: string
-                  format: email
-                  description: Contact email for the organization
-                  example: beu@beu.com
-                note:
-                  type: string
-                  description: Note for the organization
-                  example: This organization focuses on providing technology solutions for various industries.
-                apps:
-                  description: Selected app
-                  type: array
-                  uniqueItems: true
-                  items:
-                    type: string
-                    example: "ONFIDO"
-                    enum:
-                      - ONFIDO
-                      - JUMIO
-      responses:
-        "201":
-          description: Organization created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrganizationDto"
-        "400":
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels:
     get:
-      summary: Retrieve a list of organizations
-      description: Retrieves a list of all organizations.
-      operationId: listOrganizations
+      summary: Channels listing
+      description: Get all channels
+      operationId: listChannels
       tags:
-        - Organization
+        - Channel
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - in: query
           name: q
@@ -105,497 +32,17 @@ paths:
               }
             ]
             ```
-            
-            **Where:**
-            - **filterFieldName**: The field to filter by. Possible values include:
-              - `id`
-              - `org_name`
-              - `org_registration_no`
-              - `org_status`
-              - `org_contact_no`
-              - `org_contact_name`
-              - `org_email`
-              - `note`
-              - `org_logo_url`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-            
-            - **operator**: The operation to perform. Possible options are:
-              - `eq`: Equals
-              - `!eq`: Not equal
-              - `in`: In
-              - `!in`: Not in
-              - `like`: Like
-              - `!like`: Not like
-              - `gt`: Greater than
-              - `gte`: Greater than or equal to
-              - `lt`: Less than
-              - `lte`: Less than or equal to
-              - `btw`: Between
-              - `!btw`: Not between
-            
-            - **value**: The value(s) used for filtering.
-              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
-              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
-              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
-          examples:
-            example1:
-              summary: Filter by organization email
-              value: '[{ "org_email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
-            example2:
-              summary: Filter by organization name
-              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }]'
-            example3:
-              summary: Filter by active status
-              value: '[{ "org_status": { "op": "in","values": [ "ACTIVE", "INACTIVE" ] } }]'
-            example4:
-              summary: Filter by organization name and org_registration_no
-              value: '[{ "org_name": { "op": "like","values": [ "Bank Islam" ] } }, { "org_registration_no": { "op": "eq","values": [ "1234567890" ] } }]'
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 0
-          description: The page number to retrieve (0-based)
-        - in: query
-          name: size
-          schema:
-            type: integer
-            default: 20
-          description: The number of items to retrieve per page
-        - in: query
-          name: sort
-          schema:
-            type: array
-            items:
-              type: string
-              example: "org_name,desc"
-          description: |-
-            Format is `sortFieldName,direction`.
-            
-            **Where:**
-            - **sortFieldName**: The field to sort by. Possible values include:
-              - `id`
-              - `org_name`
-              - `org_registration_no`
-              - `org_status`
-              - `org_contact_no`
-              - `org_contact_name`
-              - `org_email`
-              - `note`
-              - `org_logo_url`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-            
-            - **direction**: The sorting order. Possible values are:
-              - `asc`: Sort in ascending order
-              - `desc`: Sort in descending order
-      responses:
-        "200":
-          description: A list of organizations with pagination details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrganizationsPaginatedResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}:
-    get:
-      summary: Retrieve a single organization
-      description: Retrieves details of a single organization by its ID.
-      operationId: getOrganization
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-      responses:
-        "200":
-          description: Organization details retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrganizationDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    put:
-      summary: Update an organization
-      description: Updates details of an existing organization.
-      operationId: updateOrganization
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-      requestBody:
-        description: Updated organization details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - org_name
-                - org_registration_no
-                - org_status
-              properties:
-                org_name:
-                  type: string
-                  description: Name of the organization
-                  example: Bank Islam
-                org_registration_no:
-                  type: string
-                  description: Registration no of the organization
-                  example: 1234567890
-                org_status:
-                  type: string
-                  description: Status of the organization (e.g., active, inactive)
-                  enum:
-                    - ACTIVE
-                    - INACTIVE
-                  example: ACTIVE
-                org_contact_no:
-                  type: string
-                  description: Contact phone number for the organization
-                  example: "+601234567890"
-                org_contact_name:
-                  type: string
-                  description: Contact name for the organization
-                  example: Darren
-                org_email:
-                  type: string
-                  format: email
-                  description: Contact email for the organization
-                  example: beu@beu.com
-                note:
-                  type: string
-                  description: Note for the organization
-                  example: This organization focuses on providing technology solutions for various industries.
-      responses:
-        "200":
-          description: Organization updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrganizationDto"
-        "400":
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    delete:
-      summary: Delete an organization
-      description: Deletes an existing organization by id.
-      operationId: deleteOrganization
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      responses:
-        "204":
-          description: Organization deleted successfully
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}/apps:
-    post:
-      summary: Install the apps
-      description: Install the apps.
-      operationId: installApps
-      tags:
-        - Application
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      requestBody:
-        description: App details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - apps
-              properties:
-                apps:
-                  description: Selected app
-                  type: array
-                  uniqueItems: true
-                  minItems: 1
-                  items:
-                    type: string
-                    example: "ONFIDO"
-                    enum:
-                      - ONFIDO
-                      - JUMIO
-      responses:
-        "201":
-          description: App installed successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/OrgAppDto"
-        "400":
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}/apps/{app_id}:
-    put:
-      summary: Update apps details
-      description: Updates apps details
-      operationId: updateApps
-      tags:
-        - Application
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: path
-          name: app_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the apps
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-      requestBody:
-        description: Updated apps details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                default_app_properties:
-                  description: Custom properties of the app
-                  type: object
-                  example:
-                    onfido.similarity_score_threshold: 0.8
-                    onfido.similarity_checking_flag: false
-      responses:
-        "200":
-          description: Apps details updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrgAppDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    delete:
-      summary: Uninstalls apps
-      description: Uninstalls apps.
-      operationId: uninstallApps
-      tags:
-        - Application
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-        - in: path
-          name: app_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the apps
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-      responses:
-        "204":
-          description: Apps uninstalled successfully
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}/images:
-    post:
-      summary: Upload organization's logo
-      description: Upload organization's logo
-      operationId: uploadOrganizationLogo
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: The image file to upload
-      responses:
-        "201":
-          description: Organization's logo uploaded successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrganizationDto"
-        "400":
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    delete:
-      summary: Delete organization's logo
-      description: Delete organization's logo
-      operationId: deleteOrganizationLogo
-      tags:
-        - Organization
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      responses:
-        "204":
-          description: Organization's logo deleted successfully
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}/collaborators:
-    get:
-      summary: Retrieve a list of collaborators under the organization
-      description: Retrieve a list of collaborators under the organization.
-      operationId: listCollaborators
-      tags:
-        - Collaborator
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-        - in: query
-          name: q
-          schema:
-            type: string
-          description: |-
-            Format is:
-            ```json
-            [
-              {
-                "filterFieldName": {
-                  "op": "operator",
-                  "values": ["value"]
-                }
-              }
-            ]
-            ```
-            
+
             **Where:**
             - **filterFieldName**: The field to filter by. Possible values include:
               - `id`
               - `name`
-              - `email`
-              - `last_login_time`
-            
+              - `note`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
               - `!eq`: Not equal
@@ -609,18 +56,15 @@ paths:
               - `lte`: Less than or equal to
               - `btw`: Between
               - `!btw`: Not between
-            
+
             - **value**: The value(s) used for filtering.
               - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
               - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
               - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
           examples:
             example1:
-              summary: Filter by collaborators email
-              value: '[{ "email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
-            example2:
-              summary: Filter by collaborators name
-              value: '[{ "name": { "op": "like","values": [ "Kent" ] } }]'
+              summary: Filter by channel name
+              value: '[{ "name": { "op": "eq","values": [ "Be U" ] } }]'
         - in: query
           name: page
           schema:
@@ -642,91 +86,27 @@ paths:
               example: "name,desc"
           description: |-
             Format is `sortFieldName,direction`.
-            
+
             **Where:**
             - **sortFieldName**: The field to sort by. Possible values include:
               - `id`
               - `name`
-              - `email`
-              - `last_login_time`
-            
+              - `note`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
             - **direction**: The sorting order. Possible values are:
               - `asc`: Sort in ascending order
               - `desc`: Sort in descending order
       responses:
         "200":
-          description: A list of collaborators with pagination details
+          description: A list of channels with pagination details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountsWithAccessScopeInfoPaginatedResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    post:
-      summary: Create a new account / Link an existing account
-      description: Creates a new account / Link an existing account.
-      operationId: createAccount
-      tags:
-        - Collaborator
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      requestBody:
-        description: Account creation / linking details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - email
-                - password
-                - access_scope
-              properties:
-                name:
-                  type: string
-                  description: Name of the user
-                  example: Kent
-                email:
-                  type: string
-                  description: Email of the user
-                  example: kent@reldyn.co
-                password:
-                  type: string
-                  description: Password of the user
-                  example: Kent123456
-                access_scope:
-                  description: Selected access scope of the user
-                  type: string
-                  enum:
-                    - owner
-                    - creator
-                    - editor
-                    - viewer
-                  example: "viewer"
-                account_id:
-                  description: Account id of an existing user for linking account
-                  type: string
-                  example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-      responses:
-        "201":
-          description: Account created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
+                $ref: "#/components/schemas/ChannelPaginatedResponse"
         "400":
           description: Invalid request parameters
           content:
@@ -739,32 +119,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/organizations/{organization_id}/collaborators/{account_id}:
-    put:
-      summary: Update account details
-      description: Update account details.
-      operationId: updateAccount
+    post:
+      summary: Create a new channel
+      description: Create a new channel with the provided details.
+      operationId: createChannel
       tags:
-        - Collaborator
+        - Channel
       security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: organization_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
-        - in: path
-          name: account_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier for the account
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+        - bearerAuth: [ ]
       requestBody:
-        description: Updated Account details
         required: true
         content:
           application/json:
@@ -772,33 +135,804 @@ paths:
               type: object
               required:
                 - name
-                - email
-                - access_scope
               properties:
                 name:
                   type: string
-                  description: Name of the user
-                  example: Kent
+                  description: Name of the Channel
+                  example: Ekyc channel
+                note:
+                  type: string
+                  description: Note about the Channel
+                  example: Channel for performing ekyc
+      responses:
+        '201':
+          description: Channel created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelDto'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/channels/{channel_id}:
+    get:
+      summary: Retrieve channel
+      description: Get details of a channel.
+      operationId: getChannel
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the channel
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      responses:
+        '200':
+          description: Channel details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelDto'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    put:
+      summary: Update an existing channel
+      description: Update the details of a specific channel.
+      operationId: updateChannel
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the channel
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Name of the Channel
+                  example: Ekyc channel
+                note:
+                  type: string
+                  description: Note about the Channel
+                  example: Channel for performing ekyc
+      responses:
+        '200':
+          description: Channel updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelDto'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    delete:
+      summary: Delete a channel
+      description: Delete a specific channel.
+      operationId: deleteChannel
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the channel
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      responses:
+        '204':
+          description: Channel deleted successfully
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/channels/{channel_id}/api-keys:
+    get:
+      summary: Channel keys listing
+      description: Get all keys of the channel
+      operationId: listChannelApiKeys
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the channel
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `api_key`
+              - `expires_at`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by expiry
+              value: '[{ "expires_at": { "op": "lt","values": [ "2024-10-23T07:50:34.394Z" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "id,desc"
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `api_key`
+              - `expires_at`
+              - `created_by`
+              - `created_at`
+              - `updated_by`
+              - `updated_at`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        "200":
+          description: A list of channel keys with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelKeyPaginatedResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Create a key for channel
+      description: Create a key for channel with the provided details.
+      operationId: createChannelApiKey
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "201":
+          description: Channel key created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelKeyDto'
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels/{channel_id}/api-keys/{id}:
+    delete:
+      summary: Delete a key for channel
+      description: Delete a key for channel.
+      operationId: deleteChannelApiKey
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the key
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "204":
+          description: Channel key deleted successfully
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels/{channel_id}/apps:
+    get:
+      summary: Get all installed apps for channel
+      description: Get all installed apps for channel.
+      operationId: getInstalledChannelApps
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "200":
+          description: A list of installed apps for the channel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChannelAppDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Install apps for channel
+      description: Install apps for channel.
+      operationId: installChannelApp
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        description: App details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - app_name
+              properties:
+                app_name:
+                  description: Selected app
+                  type: string
+                  example: "ONFIDO"
+                  enum:
+                    - ONFIDO
+                    - JUMIO
+                app_api_key:
+                  type: string
+                  description: Api key of the app
+                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
+      responses:
+        "201":
+          description: App installed for channel successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelAppDto'
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels/{channel_id}/apps/{id}:
+    delete:
+      summary: Uninstall apps for channel
+      description: Uninstall apps for channel.
+      operationId: uninstallChannelApp
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the channel
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the app
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+      responses:
+        "204":
+          description: Apps uninstalled successfully
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    put:
+      summary: Update apps details for channel
+      description: Update apps details for channel.
+      operationId: updateChannelAppDetails
+      tags:
+        - Channel
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel app
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        description: App details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_api_key:
+                  type: string
+                  description: Api key of the app
+                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
+                app_properties:
+                  description: Custom properties of the app
+                  type: object
+                  example:
+                    policy.onfido.similarity_score_threshold: 0.8
+                  properties:
+                    policy.onfido.similarity_score_threshold:
+                      type: number
+                      description: |-
+                        Valid for `ONFIDO` app only. The minimum similarity score required for a successful verification.
+      responses:
+        "200":
+          description: Channel app updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelAppDto'
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels/{channel_id}/collaborators:
+    get:
+      summary: Retrieve a list of collaborators under the channel
+      description: Retrieve a list of collaborators under the channel.
+      operationId: listCollaborators
+      tags:
+        - Collaborator
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```json
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `account.name`
+              - `account.email`
+              - `access_scope`
+              - `api_token`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by collaborators email
+              value: '[{ "account.email": { "op": "eq","values": [ "kent@reldyn.co" ] } }]'
+            example2:
+              summary: Filter by collaborators name
+              value: '[{ "account.name": { "op": "like","values": [ "Kent" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "account.email,desc"
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `account.name`
+              - `account.email`
+              - `access_scope`
+              - `api_token`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        "200":
+          description: A list of collaborators with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollaboratorsPaginatedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Invite new collaborator
+      description: Invite new collaborator
+      operationId: inviteCollaborator
+      tags:
+        - Collaborator
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        description: Invite new collaborator details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - access_scope
+              properties:
                 email:
                   type: string
-                  description: Email of the user
+                  description: Email of the collaborator
                   example: kent@reldyn.co
                 access_scope:
-                  description: Selected access scope of the user
+                  description: Selected access scope of the collaborator
                   type: string
                   enum:
-                    - owner
-                    - creator
+                    - editor
+                    - viewer
+                  example: "viewer"
+      responses:
+        "201":
+          description: Collaborator invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelCollaboratorDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/channels/{channel_id}/collaborators/{collaborator_id}:
+    get:
+      summary: Get collaborator details
+      description: Get collaborator details.
+      operationId: getCollaborator
+      tags:
+        - Collaborator
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: path
+          name: collaborator_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the collaborator
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      responses:
+        "200":
+          description: Collaborator details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelCollaboratorDto"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    put:
+      summary: Update collaborator details
+      description: Update collaborator details.
+      operationId: updateCollaborator
+      tags:
+        - Collaborator
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: path
+          name: collaborator_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the collaborator
+          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+      requestBody:
+        description: Updated collaborator details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - access_scope
+              properties:
+                access_scope:
+                  description: Selected access scope of the collaborator
+                  type: string
+                  enum:
                     - editor
                     - viewer
                   example: "viewer"
       responses:
         "200":
-          description: Account updated successfully
+          description: Collaborator updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
+                $ref: "#/components/schemas/ChannelCollaboratorDto"
         "400":
           description: Invalid request parameters
           content:
@@ -812,38 +946,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
     delete:
-      summary: Delete account from organization
-      description: Delete account from organization.
-      operationId: deleteAccount
+      summary: Remove collaborator from channel
+      description: remove collaborator from channel.
+      operationId: removeCollaborator
       tags:
         - Collaborator
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - in: path
-          name: organization_id
+          name: channel_id
           required: true
           schema:
             type: string
-          description: Unique identifier for the organization
-          example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
+          description: Unique identifier of the channel
+          example: "123e4567-e89b-12d3-a456-426614174000"
         - in: path
-          name: account_id
+          name: collaborator_id
           required: true
           schema:
             type: string
-          description: Unique identifier for the account
+          description: Unique identifier for the collaborator
           example: "d6f7ab5f-43c6-433d-98cc-dd253acb21a3"
       responses:
         "204":
-          description: Account deleted successfully
+          description: Collaborator removed successfully
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
-  /api/v1/admins/accounts:
+  /api/v1/accounts:
     get:
       summary: Retrieve a list of accounts
       description: Retrieve a list of accounts.
@@ -947,10 +1081,237 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Create a new account
+      description: Create a new account with the provided details.
+      operationId: createAccount
+      tags:
+        - Account
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                  example: MohammedAli
+                email:
+                  type: string
+                  description: Email of the user
+                  example: ali@reldyn.co
+                password:
+                  type: string
+                  description: Password of the user
+                  example: 123456
+                realm_role:
+                  type: string
+                  description: Realm role of the user
+                  enum:
+                    - admin
+                    - org_user
+                  example: org_user
+              required:
+                - name
+                - email
+                - password
+                - realm_role
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/accounts/{account_id}:
+    get:
+      summary: Retrieve an account by ID
+      description: Get details of a specific account.
+      operationId: getAccountById
+      tags:
+        - Account
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the account
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Account details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    put:
+      summary: Update an existing account
+      description: Update the details of a specific account.
+      operationId: updateAccount
+      tags:
+        - Account
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the account to update.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                  example: MohammedAli
+                email:
+                  type: string
+                  description: Email of the user
+                  example: ali@reldyn.co
+                password:
+                  type: string
+                  description: Password of the user
+                  example: 123456
+                realm_role:
+                  type: string
+                  description: Realm role of the user
+                  enum:
+                    - admin
+                    - org_user
+                  example: org_user
+              required:
+                - name
+                - email
+                - realm_role
+      responses:
+        '200':
+          description: Account updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    delete:
+      summary: Delete an account
+      description: Delete a specific account.
+      operationId: deleteAccount
+      tags:
+        - Account
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the account.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Account deleted successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/accounts/{account_id}/collaborations:
+    get:
+      summary: Retrieve account's collaborations
+      description: Retrieve account's collaborations.
+      operationId: listAccountCollaborations
+      tags:
+        - Account
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the account.
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "200":
+          description: A list of channels with pagination details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CollaborationDto"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
   /api/v1/collaborations:
     get:
-      summary: Retrieve a list of organizations related to the currently logged-in user
-      description: Retrieve a list of organizations related to the currently logged-in user.
+      summary: Retrieve a list of channels related to the currently logged-in user
+      description: Retrieve a list of channels related to the currently logged-in user.
       operationId: listCollaborations
       tags:
         - Collaboration
@@ -958,7 +1319,7 @@ paths:
         - bearerAuth: []
       responses:
         "200":
-          description: A list of organizations with pagination details
+          description: A list of channels with pagination details
           content:
             application/json:
               schema:
@@ -992,6 +1353,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GlobalErrorResponseDto"
+
+  /api/v1/change-password:
+    post:
+      summary: Change user password
+      description: Endpoint for updating the user's password
+      operationId: changePassword
+      tags:
+        - Profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        "204":
+          description: Password changed successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+  /api/v1/logout:
+    post:
+      summary: Proceed logout from current account
+      operationId: logout
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Logout successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
 components:
   securitySchemes:
     bearerAuth:
@@ -999,131 +1408,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    OrganizationDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the organization
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        created_by:
-          type: string
-          description: Name of the user that created this organization
-          example: Foo
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_by:
-          type: string
-          description: Name of the user that last updated this organization
-          example: Foo
-        org_name:
-          type: string
-          description: Name of the organization
-          example: Bank Islam
-        org_registration_no:
-          type: string
-          description: Registration no of the organization
-          example: 1234567890
-        org_status:
-          type: string
-          description: Status of the organization (e.g., active, inactive)
-          enum:
-            - ACTIVE
-            - INACTIVE
-          example: ACTIVE
-        org_primary_account_id:
-          type: string
-          description: Foreign key referencing the primary account associated with the organization
-          example: "6722406b-e823-40a0-b691-ea187a1e364d"
-        org_contact_no:
-          type: string
-          description: Contact phone number for the organization
-          example: "+601234567890"
-        org_contact_name:
-          type: string
-          description: Contact name for the organization
-          example: Darren
-        org_email:
-          type: string
-          format: email
-          description: Contact email for the organization
-          example: beu@beu.com
-        note:
-          type: string
-          description: Note for the organization
-          example: This organization focuses on providing technology solutions for various industries.
-        org_logo_url:
-          type: string
-          description: Logo url for the organization
-          example: https://s3.ap-south-1.amazonaws.com/logo.jpg
-        apps:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrgAppDto"
-    CollaborationDto:
-      type: object
-      properties:
-        org_id:
-          type: string
-          description: Unique identifier for the organization
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        org_name:
-          type: string
-          description: Name of the organization
-          example: Bank Islam
-        access_scope:
-          type: string
-          description: Access rights granted to the user within the organization
-          enum:
-            - owner
-            - creator
-            - editor
-            - viewer
-          example: viewer
-        apps:
-          type: array
-          items:
-            type: string
-            example: "ONFIDO"
-    OrgAppDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the app
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        created_by:
-          type: string
-          description: Name of the user that created this app
-          example: Foo
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_by:
-          type: string
-          description: Name of the user that last updated this app
-          example: Foo
-        app_name:
-          type: string
-          description: Name of the app
-          example: ONFIDO
-        default_app_properties:
-          description: Custom properties of the app
-          type: object
-          example:
-            onfido.similarity_score_threshold: 0.8
-            onfido.similarity_checking_flag: false
     AccountDto:
       type: object
       properties:
@@ -1160,20 +1444,27 @@ components:
           format: date-time
           description: Last login time of the user
           example: "2021-02-01T12:34:56Z"
-    AccountWithAccessScopeInfoDto:
+        realm_role:
+          type: string
+          description: Realm role of the user
+          enum:
+            - admin
+            - org_user
+          example: org_user
+    AppDto:
       type: object
       properties:
-        id:
+        app_name:
           type: string
-          description: Unique identifier for the user
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+          description: Name of the app
+          example: ONFIDO
         created_at:
           type: string
           format: date-time
           example: "2021-02-01T12:34:56Z"
         created_by:
           type: string
-          description: Name of the user that created this user
+          description: Name of the user that created this app
           example: Foo
         updated_at:
           type: string
@@ -1181,30 +1472,176 @@ components:
           example: "2021-02-01T12:34:56Z"
         updated_by:
           type: string
-          description: Name of the user that last updated this user
+          description: Name of the user that last updated this app
+          example: Foo
+        description:
+          type: string
+          description: Description of the app
+          example: Onfido application for performing ekyc
+        logo:
+          type: string
+          description: Logo url of the app
+          example: https://s3.ap-south-1.amazonaws.com/logo.jpg
+        service_name:
+          type: string
+          description: Service name of the app
+          example: rdi-onfido
+    ChannelDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the channel
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this app
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this app
           example: Foo
         name:
           type: string
-          description: Name of the user
+          description: Name of the channel
+          example: Ekyc channel
+        note:
+          type: string
+          description: Note about the channel
+          example: Channel for performing ekyc
+        apps:
+          type: array
+          description: List of apps associated with the channel
+          items:
+            $ref: '#/components/schemas/ChannelAppDto'
+    ChannelAppDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the channel app
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this app
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this app
+          example: Foo
+        app_name:
+          type: string
+          description: Name of the app
+          example: ONFIDO
+        app_api_key:
+          type: string
+          description: Api Key of the app
+          example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
+        app_properties:
+          type: object
+          description: Custom properties of the app
+          example:
+            policy.onfido.similarity_score_threshold: 0.8
+    ChannelCollaboratorDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the collaborator
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this collaborator
+          example: Foo
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_by:
+          type: string
+          description: Name of the user that last updated this collaborator
+          example: Foo
+        name:
+          type: string
+          description: Name of the collaborator
           example: Kent
         email:
           type: string
-          description: Email of the user
+          description: Email of the collaborator
           example: kent@reldyn.co
-        last_login_time:
+        account_id:
           type: string
-          format: date-time
-          description: Last login time of the user
-          example: "2021-02-01T12:34:56Z"
+          description: Account id of the collaborator
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
         access_scope:
           type: string
-          description: Access rights granted to the user within the organization
+          description: Access rights granted to the collaborator within the channel
           enum:
-            - owner
-            - creator
             - editor
             - viewer
           example: viewer
+    ChannelKeyDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the key
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        api_key:
+          type: string
+          description: Key generated for channel
+          example: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NmYwOGEyOS1lNmMxLTQzMzYtOWZmYy05MjgzZjYwYWUyZDIifQ.YxO2390uoSX566s6z2PZnNy10VPe5gAaWKEgaxFypZ4
+        expires_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+    CollaborationDto:
+      type: object
+      properties:
+        channel_id:
+          type: string
+          description: Unique identifier for the channel
+          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+        channel_name:
+          type: string
+          description: Name of the channel
+          example: Be U
+        access_scope:
+          type: string
+          description: Access rights granted to the collaborator within the channel
+          enum:
+            - editor
+            - viewer
+          example: viewer
+        apps:
+          type: array
+          items:
+            type: string
+            example: "ONFIDO"
     GlobalErrorResponseDto:
       type: object
       properties:
@@ -1221,38 +1658,7 @@ components:
         path:
           type: string
           description: The endpoint path where the error occurred
-          example: "/v1/organizations"
-    OrganizationsPaginatedResponse:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrganizationDto"
-        number:
-          type: integer
-          example: 0
-        size:
-          type: integer
-          example: 20
-        total_elements:
-          type: integer
-          example: 1
-        last:
-          type: boolean
-          example: true
-        first:
-          type: boolean
-          example: true
-        total_pages:
-          type: integer
-          example: 1
-        number_of_elements:
-          type: integer
-          example: 1
-        empty:
-          type: boolean
-          example: false
+          example: "/api/v1/channels"
     AccountsPaginatedResponse:
       type: object
       properties:
@@ -1284,13 +1690,75 @@ components:
         empty:
           type: boolean
           example: false
-    AccountsWithAccessScopeInfoPaginatedResponse:
+    ChannelPaginatedResponse:
       type: object
       properties:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/AccountWithAccessScopeInfoDto"
+            $ref: "#/components/schemas/ChannelDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    CollaboratorsPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChannelCollaboratorDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    ChannelKeyPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChannelKeyDto"
         number:
           type: integer
           example: 0
@@ -1330,3 +1798,17 @@ components:
           type: string
           description: Role of the user (admin/org_user)
           example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+    ChangePasswordRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          description: The new password for the user
+          example: "new_password123"
+        confirm_password:
+          type: string
+          description: Confirmation of the new password
+          example: "new_password123"
+      required:
+        - password
+        - confirm_password

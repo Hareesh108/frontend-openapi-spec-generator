@@ -188,6 +188,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
 
+  /api/v1/requests/{request_id}/executions/{execution_id}/review:
+    post:
+      summary: Review request execution
+      description: Submit a review decision for a specific execution within a request.
+      operationId: reviewRequestExecution
+      tags:
+        - Request
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the request.
+        - name: execution_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the request execution.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - decision
+              properties:
+                decision:
+                  type: string
+                  enum:
+                    - APPROVE
+                    - REJECT
+                  description: Decision for the review, either APPROVE or REJECT.
+                reason:
+                  type: string
+                  description: Reason for the decision.
+                note:
+                  type: string
+                  description: Additional notes.
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                    description: List of attachment files.
+      responses:
+        '200':
+          description: Review submitted successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+
   /api/v1/reasons:
     get:
       summary: Retrieve a list of reasons
@@ -507,762 +570,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
 
-  /api/v1/channels:
-    get:
-      summary: Channel listing
-      description: Get all channels under the organization
-      operationId: getChannels
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-        - in: query
-          name: q
-          schema:
-            type: string
-          description: |-
-            Format is:
-            ```json
-            [
-              {
-                "filterFieldName": {
-                  "op": "operator",
-                  "values": ["value"]
-                }
-              }
-            ]
-            ```
-
-            **Where:**
-            - **filterFieldName**: The field to filter by. Possible values include:
-              - `id`
-              - `name`
-              - `note`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **operator**: The operation to perform. Possible options are:
-              - `eq`: Equals
-              - `!eq`: Not equal
-              - `in`: In
-              - `!in`: Not in
-              - `like`: Like
-              - `!like`: Not like
-              - `gt`: Greater than
-              - `gte`: Greater than or equal to
-              - `lt`: Less than
-              - `lte`: Less than or equal to
-              - `btw`: Between
-              - `!btw`: Not between
-
-            - **value**: The value(s) used for filtering.
-              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
-              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
-              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
-          examples:
-            example1:
-              summary: Filter by channel name
-              value: '[{ "name": { "op": "eq","values": [ "TEST-CHANNEL" ] } }]'
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 0
-          description: The page number to retrieve (0-based)
-        - in: query
-          name: size
-          schema:
-            type: integer
-            default: 20
-          description: The number of items to retrieve per page
-        - in: query
-          name: sort
-          schema:
-            type: array
-            items:
-              type: string
-              example: "name,desc"
-          description: |-
-            Format is `sortFieldName,direction`.
-
-            **Where:**
-            - **sortFieldName**: The field to sort by. Possible values include:
-              - `id`
-              - `name`
-              - `note`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **direction**: The sorting order. Possible values are:
-              - `asc`: Sort in ascending order
-              - `desc`: Sort in descending order
-      responses:
-        "200":
-          description: A list of channels with pagination details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ChannelPaginatedResponse"
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    post:
-      summary: Create a new channel
-      description: Create a new channel with the provided details.
-      operationId: createChannel
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  description: Name of the Channel
-                  example: Ekyc channel
-                note:
-                  type: string
-                  description: Note about the Channel
-                  example: Channel for performing ekyc
-
-      responses:
-        '201':
-          description: Channel created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelDto'
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-
-  /api/v1/channels/{channel_id}:
-    get:
-      summary: Retrieve channel
-      description: Get details of a channel.
-      operationId: getChannel
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the channel
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        '200':
-          description: Channel details retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelDto'
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-    put:
-      summary: Update an existing channel
-      description: Update the details of a specific channel.
-      operationId: updateChannel
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the channel
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  description: Name of the Channel
-                  example: Ekyc channel
-                note:
-                  type: string
-                  description: Note about the Channel
-                  example: Channel for performing ekyc
-      responses:
-        '200':
-          description: Channel updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelDto'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-    delete:
-      summary: Delete a channel
-      description: Delete a specific channel.
-      operationId: deleteChannel
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the channel
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        '204':
-          description: Channel deleted successfully
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-
-  /api/v1/channels/{channel_id}/api-keys:
-    get:
-      summary: Channel client keys listing
-      description: Get all client keys of the channel
-      operationId: getChannelApiKeys
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the channel
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-        - in: query
-          name: q
-          schema:
-            type: string
-          description: |-
-            Format is:
-            ```json
-            [
-              {
-                "filterFieldName": {
-                  "op": "operator",
-                  "values": ["value"]
-                }
-              }
-            ]
-            ```
-
-            **Where:**
-            - **filterFieldName**: The field to filter by. Possible values include:
-              - `id`
-              - `api_key`
-              - `expires_at`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **operator**: The operation to perform. Possible options are:
-              - `eq`: Equals
-              - `!eq`: Not equal
-              - `in`: In
-              - `!in`: Not in
-              - `like`: Like
-              - `!like`: Not like
-              - `gt`: Greater than
-              - `gte`: Greater than or equal to
-              - `lt`: Less than
-              - `lte`: Less than or equal to
-              - `btw`: Between
-              - `!btw`: Not between
-
-            - **value**: The value(s) used for filtering.
-              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
-              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
-              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
-          examples:
-            example1:
-              summary: Filter by expiry
-              value: '[{ "expires_at": { "op": "lt","values": [ "2024-10-23T07:50:34.394Z" ] } }]'
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 0
-          description: The page number to retrieve (0-based)
-        - in: query
-          name: size
-          schema:
-            type: integer
-            default: 20
-          description: The number of items to retrieve per page
-        - in: query
-          name: sort
-          schema:
-            type: array
-            items:
-              type: string
-              example: "id,desc"
-          description: |-
-            Format is `sortFieldName,direction`.
-
-            **Where:**
-            - **sortFieldName**: The field to sort by. Possible values include:
-              - `id`
-              - `api_key`
-              - `expires_at`
-              - `created_by`
-              - `created_at`
-              - `updated_by`
-              - `updated_at`
-
-            - **direction**: The sorting order. Possible values are:
-              - `asc`: Sort in ascending order
-              - `desc`: Sort in descending order
-      responses:
-        "200":
-          description: A list of client keys with pagination details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ChannelKeyPaginatedResponse"
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    post:
-      summary: Create a client key for channel
-      description: Create a client key for channel with the provided details.
-      operationId: createChannelApiKey
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        '201':
-          description: Channel key created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelKeyDto'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-  /api/v1/channels/{channel_id}/api-keys/{id}:
-    delete:
-      summary: Delete a client key for channel
-      description: Delete a client key for channel.
-      operationId: deleteChannelApiKey
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the client key
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        '204':
-          description: Channel-key deleted successfully
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-  /api/v1/channels/{channel_id}/apps:
-    get:
-      summary: Get all installed apps for channel
-      description: Get all installed apps for channel.
-      operationId: getInstalledChannelApps
-      tags:
-        - Channel
-      security:
-        - bearerAuth: [ ]
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        "200":
-          description: A list of installed apps for the channel
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ChannelAppDto"
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GlobalErrorResponseDto"
-    post:
-      summary: Install apps for channel
-      description: Install apps for channel.
-      operationId: installChannelApp
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      requestBody:
-        description: App details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - app_name
-              properties:
-                app_name:
-                  description: Selected app
-                  type: string
-                  example: "ONFIDO"
-                  enum:
-                    - ONFIDO
-                    - JUMIO
-                app_api_key:
-                  type: string
-                  description: Api key of the app
-                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
-      responses:
-        '201':
-          description: App installed for channel successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelAppDto'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-  /api/v1/channels/{channel_id}/apps/{id}:
-    delete:
-      summary: Uninstall apps for channel
-      description: Uninstall apps for channel.
-      operationId: uninstallChannelApp
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the channel
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Unique reference of the app
-          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      responses:
-        '204':
-          description: Apps uninstalled successfully
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-    put:
-      summary: Update apps details for channel
-      description: Update apps details for channel.
-      operationId: updateChannelAppDetails
-      tags:
-        - Channel
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: channel_id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Unique identifier of the channel app
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: orgid
-          required: true
-          schema:
-            type: string
-          description: The organization ID
-          example: "111111"
-      requestBody:
-        description: App details
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                app_api_key:
-                  type: string
-                  description: Api key of the app
-                  example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
-                app_properties:
-                  description: Custom properties of the app
-                  type: object
-                  example:
-                    policy.onfido.similarity_score_threshold: 0.8
-                  properties:
-                    policy.onfido.similarity_score_threshold:
-                      type: number
-                      description: |-
-                        Valid for `ONFIDO` app only. The minimum similarity score required for a successful verification.
-      responses:
-        '200':
-          description: Channel app updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelAppDto'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GlobalErrorResponseDto'
-
 components:
   securitySchemes:
     bearerAuth:
@@ -1307,11 +614,11 @@ components:
         metadata:
           type: object
           description: Dynamic request information sent based on app
-        client_id:
+        channel_id:
           type: string
           description: Request belong to which client
           example: "+6722406b-e823-40a0-b691-ea187a1e364d"
-        client_name:
+        channel_name:
           type: string
           example: name for the client
 
@@ -1352,9 +659,9 @@ components:
         metadata:
           type: object
           description: Dynamic request information sent based on app
-        client_id:
+        channel_id:
           type: string
-          description: Request belong to which client
+          description: Request belong to which channel
           example: "+6722406b-e823-40a0-b691-ea187a1e364d"
         request_executions:
           type: array
@@ -1390,6 +697,18 @@ components:
               credentials:
                 type: object
                 description: Dynamic credential of the response
+              app:
+                type: string
+                description: Request app
+                example: ONFIDO
+              channel_id:
+                type: string
+                description: Request belong to which channel
+                example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+              reference_id:
+                type: string
+                description: Request belong to which workflow
+                example: "+6722406b-e823-40a0-b691-ea187a1e364d"
               request_execution_reasons:
                 type: array
                 description: Reason on failed request
@@ -1402,7 +721,7 @@ components:
                     manual_review:
                       type: boolean
                       description: Indication request is manual/auto rejected
-        client_name:
+        channel_name:
           type: string
           example: name for the client
 
@@ -1508,7 +827,7 @@ components:
           type: string
           description: A detailed description of the reason
           example: Scam report on this account
-        organization_id:
+        channel_id:
           type: string
           description: Id of the organization
           example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532
@@ -1516,144 +835,3 @@ components:
           type: string
           description: Application of the organization
           example: ONFIDO
-    ChannelPaginatedResponse:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/ChannelDto"
-        number:
-          type: integer
-          example: 0
-        size:
-          type: integer
-          example: 20
-        total_elements:
-          type: integer
-          example: 1
-        last:
-          type: boolean
-          example: true
-        first:
-          type: boolean
-          example: true
-        total_pages:
-          type: integer
-          example: 1
-        number_of_elements:
-          type: integer
-          example: 1
-        empty:
-          type: boolean
-          example: false
-    ChannelKeyPaginatedResponse:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/ChannelKeyDto"
-        number:
-          type: integer
-          example: 0
-        size:
-          type: integer
-          example: 20
-        total_elements:
-          type: integer
-          example: 1
-        last:
-          type: boolean
-          example: true
-        first:
-          type: boolean
-          example: true
-        total_pages:
-          type: integer
-          example: 1
-        number_of_elements:
-          type: integer
-          example: 1
-        empty:
-          type: boolean
-          example: false
-    ChannelDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the request
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        name:
-          type: string
-          description: Name of the Channel
-          example: Ekyc channel
-        note:
-          type: string
-          description: Note about the Channel
-          example: Channel for performing ekyc
-        apps:
-          type: array
-          description: List of OrgClientApp associated with the Channel
-          items:
-            $ref: '#/components/schemas/ChannelAppDto'
-    ChannelKeyDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the request
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        api_key:
-          type: string
-          description: Key generated for channel
-          example: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NmYwOGEyOS1lNmMxLTQzMzYtOWZmYy05MjgzZjYwYWUyZDIifQ.YxO2390uoSX566s6z2PZnNy10VPe5gAaWKEgaxFypZ4
-        expires_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-    ChannelAppDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the request
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
-        created_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2021-02-01T12:34:56Z"
-        app_name:
-          type: string
-          description: Name of the app
-          example: ONFIDO
-        app_api_key:
-          type: string
-          description: Api Key of the app
-          example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
-        app_properties:
-          type: object
-          description: Custom properties of the app
-          example:
-            policy.onfido.similarity_score_threshold: 0.8

@@ -43,13 +43,12 @@ x-tagGroups:
       - Authentication
   - name: Admin
     tags:
-      - Organization
-      - Collaborator
-      - Application
+      - Channel
       - Account
   - name: Org User
     tags:
       - Collaboration
-      - Channel
+      - Collaborator
+      - Profile
       - Request
       - Reason
