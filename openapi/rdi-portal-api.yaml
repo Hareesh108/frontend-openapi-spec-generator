@@ -2219,6 +2219,10 @@ components:
           type: string
           description: Logo url of the app
           example: 'https://s3.ap-south-1.amazonaws.com/logo.jpg'
+        label:
+          type: string
+          description: Label of the app
+          example: Onfido
     ChannelDto:
       type: object
       properties:
@@ -2291,6 +2295,10 @@ components:
           description: Custom properties of the app
           example:
             policy.onfido.similarity_score_threshold: 0.8
+        app_label:
+          type: string
+          description: Label of the app
+          example: Onfido
     ChannelCollaboratorDto:
       type: object
       properties:
