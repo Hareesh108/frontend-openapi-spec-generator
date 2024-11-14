@@ -2527,10 +2527,13 @@ components:
           type: string
           description: Email of the user
           example: kent@reldyn.co
-        role:
+        realm_role:
           type: string
-          description: Role of the user (admin/org_user)
-          example: 9b434c1b-a9c6-42b3-8020-ff9fed9ec42a
+          description: Realm role of the user
+          enum:
+            - admin
+            - org_user
+          example: org_user
     ChangePasswordRequest:
       type: object
       properties:
