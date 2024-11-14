@@ -2817,7 +2817,7 @@ x-tagGroups:
     tags:
       - Channel
       - Account
-  - name: Org User
+  - name: Channel User
     tags:
       - Collaboration
       - Collaborator
