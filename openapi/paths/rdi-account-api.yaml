@@ -1113,8 +1113,8 @@ paths:
                   description: Realm role of the user
                   enum:
                     - admin
-                    - org_user
-                  example: org_user
+                    - channel_user
+                  example: channel_user
               required:
                 - name
                 - email
@@ -1214,8 +1214,8 @@ paths:
                   description: Realm role of the user
                   enum:
                     - admin
-                    - org_user
-                  example: org_user
+                    - channel_user
+                  example: channel_user
               required:
                 - name
                 - email
@@ -1479,8 +1479,8 @@ components:
           description: Realm role of the user
           enum:
             - admin
-            - org_user
-          example: org_user
+            - channel_user
+          example: channel_user
     AppDto:
       type: object
       properties:
@@ -1824,8 +1824,8 @@ components:
           description: Realm role of the user
           enum:
             - admin
-            - org_user
-          example: org_user
+            - channel_user
+          example: channel_user
     ChangePasswordRequest:
       type: object
       properties:
