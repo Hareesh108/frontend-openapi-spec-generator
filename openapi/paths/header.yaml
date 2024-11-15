@@ -45,10 +45,10 @@ x-tagGroups:
     tags:
       - Channel
       - Account
+      - Collaborator
   - name: Channel User
     tags:
       - Collaboration
-      - Collaborator
       - Profile
       - Request
       - Reason
