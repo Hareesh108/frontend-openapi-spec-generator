@@ -89,16 +89,6 @@ paths:
         - basicAuth: []
 
 components:
-  schemas:
-    Role:
-      type: string
-      enum:
-        - admin
-        - org_user
-        - viewer
-        - editor
-        - owner
-      description: Possible roles assigned to the user.
   securitySchemes:
     basicAuth:
       type: http

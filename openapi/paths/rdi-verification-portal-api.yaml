@@ -35,19 +35,19 @@ paths:
     get:
       summary: Requests listing
       description: Get the verification requests
-      operationId: getRequests
+      operationId: listRequests
       tags:
         - Request
       security:
         - bearerAuth: []
       parameters:
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
         - in: query
           name: q
           schema:
@@ -168,12 +168,12 @@ paths:
           description: Unique reference of the request
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
       responses:
         '200':
           description: Request details retrieved successfully
@@ -250,24 +250,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
-
+  
   /api/v1/reasons:
     get:
       summary: Retrieve a list of reasons
       description: Get a list of all reasons.
-      operationId: getReasons
+      operationId: listReasons
       tags:
         - Reason
       security:
         - bearerAuth: []
       parameters:
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
         - in: query
           name: q
           schema:
@@ -356,7 +356,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReasonPaginatedResponse'
+                  $ref: '#/components/schemas/ReasonPaginatedResponse'
         '400':
           description: Invalid request parameters
           content:
@@ -379,12 +379,12 @@ paths:
         - bearerAuth: []
       parameters:
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
       requestBody:
         required: true
         content:
@@ -431,7 +431,7 @@ paths:
     get:
       summary: Retrieve a reason by ID
       description: Get details of a specific reason.
-      operationId: getReasonById
+      operationId: getReason
       tags:
         - Reason
       security:
@@ -445,12 +445,12 @@ paths:
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: 111111
+          description: The channel ID
+          example: 123e4567-e89b-12d3-a456-426614174000
       responses:
         '200':
           description: Reason details retrieved successfully
@@ -487,12 +487,12 @@ paths:
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
       requestBody:
         content:
           application/json:
@@ -548,12 +548,12 @@ paths:
           description: Unique identifier of the reason
           example: "123e4567-e89b-12d3-a456-426614174000"
         - in: header
-          name: orgid
+          name: channelid
           required: true
           schema:
             type: string
-          description: The organization ID
-          example: "111111"
+          description: The channel ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
       responses:
         '200':
           description: Reason deleted successfully
@@ -600,6 +600,7 @@ components:
           type: string
           description: Status of the request
           enum:
+            - AWAITING_INPUT
             - PROCESSING
             - REVIEW
             - APPROVED
@@ -616,8 +617,8 @@ components:
           description: Dynamic request information sent based on app
         channel_id:
           type: string
-          description: Request belong to which client
-          example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+          description: Request belong to which channel
+          example: "6722406b-e823-40a0-b691-ea187a1e364d"
         channel_name:
           type: string
           example: name for the client
@@ -645,6 +646,7 @@ components:
           type: string
           description: Status of the request
           enum:
+            - AWAITING_INPUT
             - PROCESSING
             - REVIEW
             - APPROVED
@@ -662,7 +664,7 @@ components:
         channel_id:
           type: string
           description: Request belong to which channel
-          example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+          example: "6722406b-e823-40a0-b691-ea187a1e364d"
         request_executions:
           type: array
           description: Request execution details
@@ -704,11 +706,11 @@ components:
               channel_id:
                 type: string
                 description: Request belong to which channel
-                example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+                example: "6722406b-e823-40a0-b691-ea187a1e364d"
               reference_id:
                 type: string
                 description: Request belong to which workflow
-                example: "+6722406b-e823-40a0-b691-ea187a1e364d"
+                example: "6722406b-e823-40a0-b691-ea187a1e364d"
               request_execution_reasons:
                 type: array
                 description: Reason on failed request
