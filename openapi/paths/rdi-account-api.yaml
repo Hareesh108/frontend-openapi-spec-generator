@@ -1516,6 +1516,21 @@ components:
           type: string
           description: Label of the app
           example: Onfido
+        menuLinks:
+          type: object
+          description: Links of the app
+          example:
+            subheader: Jumio
+            roles: [ "channel_user" ]
+            items:
+              - title: Request
+                path: /jumio/request
+                icon: ic-parameter
+                roles: [ "channel_user" ]
+              - title: Reason
+                path: /jumio/reason
+                icon: ic-parameter
+                roles: [ "channel_user" ]
     ChannelDto:
       type: object
       properties:
