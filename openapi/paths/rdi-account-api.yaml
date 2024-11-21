@@ -1010,6 +1010,7 @@ paths:
               - `name`
               - `email`
               - `last_login_time`
+              - `realm_role.id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -1036,6 +1037,9 @@ paths:
             example2:
               summary: Filter by account name
               value: '[{ "name": { "op": "like","values": [ "Kent" ] } }]'
+            example3:
+              summary: Filter by realm role
+              value: '[{ "realm_role.id": { "op": "in","values": [ "admin", "channel_user" ] } }]'
         - in: query
           name: page
           schema:
@@ -1064,6 +1068,7 @@ paths:
               - `name`
               - `email`
               - `last_login_time`
+              - `realm_role.id`
 
             - **direction**: The sorting order. Possible values are:
               - `asc`: Sort in ascending order
@@ -1515,7 +1520,7 @@ components:
         label:
           type: string
           description: Label of the app
-          example: Onfido
+          example: Jumio
         menu_links:
           type: object
           description: Menu links of the app
