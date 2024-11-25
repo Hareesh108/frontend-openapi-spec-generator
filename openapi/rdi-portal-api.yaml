@@ -2376,6 +2376,10 @@ components:
           type: string
           format: date-time
           example: '2021-02-01T12:34:56Z'
+        created_by:
+          type: string
+          description: Email of the user that created this key
+          example: kent@reldyn.co
         api_key:
           type: string
           description: Key generated for channel
