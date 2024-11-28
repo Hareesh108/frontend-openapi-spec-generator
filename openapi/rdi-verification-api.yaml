@@ -228,6 +228,10 @@ components:
                   - ONFIDO_WORKFLOW_RUN_ID
                   - ONFIDO_APPLICANT_ID
                   - ONFIDO_WEB_URL
+                  - JUMIO_SDK_TOKEN
+                  - JUMIO_APPLICANT_ID
+                  - JUMIO_WEB_URL
+                  - JUMIO_WORKFLOW_RUN_ID
                 example: ONFIDO_SDK_TOKEN
               value:
                 type: string
