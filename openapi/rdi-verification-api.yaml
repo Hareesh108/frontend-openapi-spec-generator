@@ -159,7 +159,7 @@ components:
       properties:
         app:
           type: string
-          description: App for verification (currently only supports ONFIDO)
+          description: App for verification (currently supports ONFIDO and JUMIO)
           example: ONFIDO
         customer_internal_reference:
           type: string
