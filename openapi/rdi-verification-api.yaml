@@ -88,7 +88,7 @@ paths:
           schema:
             type: string
           description: Unique reference of the verification request
-          example: request_123
+          example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
         - in: query
           name: details_level
           required: false
@@ -127,7 +127,7 @@ paths:
           schema:
             type: string
           description: Unique reference of the verification request
-          example: request_123
+          example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
       requestBody:
         description: Payload to download a document
         required: true
@@ -164,18 +164,18 @@ components:
         customer_internal_reference:
           type: string
           description: Channel customer ID
-          example: customer_123
+          example: f60a954e-fe14-4918-abbf-6d48ca71996c
         metadata:
           type: object
           properties:
             workflow_id:
               type: string
               description: Workflow ID (mandatory for ONFIDO)
-              example: workflow_123
+              example: 1bda3d54-3527-4090-b341-429333d23896
             applicant_id:
               type: string
               description: If populated, will skip applicant creation
-              example: applicant_123
+              example: 3993afe2-e4f1-4087-ab34-27edcac98ab0
             workflow_custom_input:
               type: object
               description: Additional custom input fields for the workflow, dynamically populated and sent to Onfido if not empty
@@ -192,13 +192,14 @@ components:
           description: Status of the request
           enum:
             - PROCESSING
+            - AWAITING_INPUT
             - REVIEW
             - APPROVED
             - DECLINED
             - ERROR
             - EXPIRED
           example: PENDING
-        reason:
+        reasons:
           type: array
           items:
             type: String
@@ -212,7 +213,7 @@ components:
         request_reference:
           type: string
           description: Unique reference for querying request status
-          example: request_123
+          example: 3993afe2-e4f1-4087-ab34-27edcac98ab0
         credentials:
           type: array
           description: Credentials for SDK initialization
@@ -246,8 +247,8 @@ components:
             - DECLINED
             - ERROR
             - EXPIRED
-          example: DECLINED
-        reason:
+          example: AWAITING_INPUT
+        reasons:
           type: array
           items:
             type: String
@@ -255,7 +256,7 @@ components:
         request_reference:
           type: string
           description: Unique reference of the verification request
-          example: request_123
+          example: 3993afe2-e4f1-4087-ab34-27edcac98ab0
         created_at:
           type: string
           format: date-time
