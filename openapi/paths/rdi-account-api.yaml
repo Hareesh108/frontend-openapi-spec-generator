@@ -544,9 +544,6 @@ paths:
                   description: Selected app
                   type: string
                   example: "ONFIDO"
-                  enum:
-                    - ONFIDO
-                    - JUMIO
                 app_api_key:
                   type: string
                   description: Api key of the app
