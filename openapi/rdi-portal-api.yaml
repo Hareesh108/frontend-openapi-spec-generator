@@ -785,13 +785,74 @@ paths:
                   description: Custom properties of the app
                   type: object
                   example:
-                    policy.onfido.similarity_score_threshold: 0.8
+                    onfido.webhookUrl: 'http://rdi-onfido/internal/query'
+                    onfido.similarityScore.validation: WORKFLOW
+                    onfido.similarityScore.minThreshold: 0.8
+                    jumio.webhookUrl: 'http://rdi-jumio/internal/query'
+                    jumio.similarityScore.validation: PLATFORM
+                    jumio.similarityScore.minApproveThreshold: 0.7
+                    jumio.similarityScore.minReviewThreshold: 0.5
+                    jumio.riskScore.validate: true
+                    jumio.riskScore.maxApproveThreshold: 50
+                    jumio.riskScore.maxReviewThreshold: 70
                   properties:
-                    policy.onfido.similarity_score_threshold:
+                    onfido.webhookUrl:
+                      type: string
+                      description: |
+                        The URL for receiving webhook notifications from Onfido.
+                    onfido.similarityScore.validation:
+                      type: string
+                      enum:
+                        - PLATFORM
+                        - WORKFLOW
+                        - NONE
+                      description: >
+                        The validation mode for similarity score in Onfido for
+                        determining validated scores upon receiving a callback.
+                    onfido.similarityScore.minThreshold:
                       type: number
-                      description: >-
-                        Valid for `ONFIDO` app only. The minimum similarity
-                        score required for a successful verification.
+                      description: >
+                        The minimum similarity score required for a successful
+                        verification in Onfido.
+                    jumio.webhookUrl:
+                      type: string
+                      description: |
+                        The URL for receiving webhook notifications from Jumio.
+                    jumio.similarityScore.validation:
+                      type: string
+                      enum:
+                        - PLATFORM
+                        - WORKFLOW
+                        - NONE
+                      description: |
+                        The validation mode for similarity score in Jumio.
+                    jumio.similarityScore.minApproveThreshold:
+                      type: number
+                      description: >
+                        The minimum approval threshold for similarity score in
+                        Jumio. A score below this threshold will lead to
+                        rejection.
+                    jumio.similarityScore.minReviewThreshold:
+                      type: number
+                      description: >
+                        The minimum review threshold for similarity score in
+                        Jumio. A score above this threshold but below the
+                        approval threshold will lead to a review status.
+                    jumio.riskScore.validate:
+                      type: boolean
+                      description: |
+                        Indicates risk scoring validation is enabled for Jumio.
+                    jumio.riskScore.maxApproveThreshold:
+                      type: number
+                      description: >
+                        The maximum approval threshold for risk scores in Jumio.
+                        A score exceeding this threshold will lead to rejection.
+                    jumio.riskScore.maxReviewThreshold:
+                      type: number
+                      description: >
+                        The maximum review threshold for risk scores in Jumio. A
+                        score above this threshold but below the approval
+                        threshold will lead to a review status.
       responses:
         '200':
           description: Channel app updated successfully
@@ -2315,7 +2376,7 @@ components:
           type: object
           description: Custom properties of the app
           example:
-            policy.onfido.similarity_score_threshold: 0.8
+            onfido.similarityScore.minThreshold: 0.8
         app_label:
           type: string
           description: Label of the app
