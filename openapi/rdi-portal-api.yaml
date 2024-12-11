@@ -2852,6 +2852,9 @@ components:
               summary:
                 type: object
                 description: Dynamic basic result details of the response
+              profile:
+                type: object
+                description: Dynamic profile result details of the response
               result:
                 type: object
                 description: Dynamic full result details of the response

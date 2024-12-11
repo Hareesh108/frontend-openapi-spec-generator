@@ -277,6 +277,9 @@ components:
         results:
           type: object
           description: Results, populated when status is REVIEW, APPROVED, or DECLINED
+        profile:
+          type: object
+          description: Profile of the applicant
           
     DocumentDownloadRequest:
       type: object
