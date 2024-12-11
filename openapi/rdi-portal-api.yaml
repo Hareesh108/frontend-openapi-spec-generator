@@ -1666,7 +1666,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
         - in: query
           name: q
           schema:
@@ -1801,7 +1801,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
       responses:
         '200':
           description: Request details retrieved successfully
@@ -1829,12 +1829,14 @@ paths:
           schema:
             type: string
           description: The ID of the request.
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
         - name: execution_id
           in: path
           required: true
           schema:
             type: string
           description: The ID of the request execution.
+          example: 5425fa78-d8d3-4184-8d68-c9cb95e56c3f
       requestBody:
         required: true
         content:
@@ -1893,7 +1895,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
         - in: query
           name: q
           schema:
@@ -2016,7 +2018,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         required: true
         content:
@@ -2081,7 +2083,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Reason details retrieved successfully
@@ -2123,7 +2125,7 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         content:
           application/json:
@@ -2183,10 +2185,106 @@ paths:
           schema:
             type: string
           description: The channel ID
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Reason deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+  '/api/v1/requests/{request_id}/files':
+    get:
+      summary: List all files of the request
+      description: List all files of the request.
+      operationId: listRequestFiles
+      tags:
+        - Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
+      responses:
+        '200':
+          description: List of files retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RequestFileDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+  '/api/v1/requests/{request_id}/files/{file_id}/download':
+    get:
+      summary: Download request file
+      description: Download request file.
+      operationId: downloadRequestFile
+      tags:
+        - Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: path
+          name: file_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the file
+          example: dd43ee6b-d90e-41b8-bb9b-385529d591fd
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
+      responses:
+        '200':
+          description: File retrieved successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
         '400':
           description: Bad Request
           content:
@@ -2900,6 +2998,53 @@ components:
           type: string
           description: Application of the organization
           example: ONFIDO
+    RequestFileDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        request_id:
+          type: string
+          description: Unique identifier for the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        request_execution_id:
+          type: string
+          description: Unique identifier for the request execution
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        request_event_id:
+          type: string
+          description: Unique identifier for the request event
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        category:
+          type: string
+          description: Category of the file
+          example: ID
+        sub_category:
+          type: string
+          description: Subcategory of the file
+          example: FRONT
+        original_url:
+          type: string
+          description: The original URL where the file can be accessed
+          example: 'http://example.com/original-file'
+        file_name:
+          type: string
+          description: The name of the file
+          example: file1.png
+        file_type:
+          type: string
+          description: 'The type of the file (e.g., png, jpg)'
+          example: png
+        file_size:
+          type: string
+          description: The size of the file in bytes
+          example: 1024
+        file_path:
+          type: string
+          description: The path to the file
+          example: /jumio/ID/FRONT/file1.png
 x-tagGroups:
   - name: Authentication
     tags:
