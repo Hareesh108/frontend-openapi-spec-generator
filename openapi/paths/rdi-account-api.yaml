@@ -644,8 +644,7 @@ paths:
                 app_properties:
                   description: Custom properties of the app
                   type: object
-                  schema:
-                    $ref: "#/components/schemas/AppProperty"
+                  $ref: "#/components/schemas/AppProperty"
                   example:
                     onfido_webhook_url: "http://rdi-onfido/internal/query"
                     onfido_similarity_score_validation: "WORKFLOW"
@@ -1609,8 +1608,7 @@ components:
         app_properties:
           description: Custom properties of the app
           type: object
-          schema:
-            $ref: "#/components/schemas/AppProperty"
+          $ref: "#/components/schemas/AppProperty"
           example:
             onfido_webhook_url: "http://rdi-onfido/internal/query"
             onfido_similarity_score_validation: "WORKFLOW"
@@ -1888,6 +1886,7 @@ components:
         - confirm_password
     AppProperty:
       type: object
+      description: Custom properties for the app
       properties:
         onfido_webhook_url:
           type: string
