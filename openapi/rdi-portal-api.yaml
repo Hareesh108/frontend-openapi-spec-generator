@@ -2868,6 +2868,87 @@ components:
               profile:
                 type: object
                 description: Dynamic profile result details of the response
+                properties:
+                  type:
+                    type: string
+                    description: Ekyc card type
+                    example: NATIONAL_ID
+                  id_number:
+                    type: string
+                    description: Document id number
+                    example: 660320101988
+                  issuing_country:
+                    type: string
+                    description: Document issuing country
+                    example: MYS
+                  full_name:
+                    type: string
+                    description: Document full name
+                    example: Alexandra Avando
+                  first_name:
+                    type: string
+                    description: Document first name
+                    example: Avando
+                  middle_name:
+                    type: string
+                    description: Document middle name
+                    example: Alexandra
+                  last_name:
+                    type: string
+                    description: Document last name
+                    example: Alexandra
+                  full_address:
+                    type: string
+                    description: Document full address
+                    example: '88, jalan gembira, taman bahagia, 88888, selangor.'
+                  address_line_1:
+                    type: string
+                    description: Document address line 1
+                    example: '88, jalan gembira'
+                  address_line_2:
+                    type: string
+                    description: Document address line 2
+                    example: taman bahagia
+                  address_line_3:
+                    type: string
+                    description: Document address line 3
+                    example: '88888, selangor'
+                  address_line_4:
+                    type: string
+                    description: Document address line 4
+                    example: 't88888, selangor'
+                  address_line_5:
+                    type: string
+                    description: Document address line 5
+                    example: '88888, selangor'
+                  postcode:
+                    type: string
+                    description: Document address postal code
+                    example: 88888
+                  city:
+                    type: string
+                    description: Document address city
+                    example: Klang
+                  state:
+                    type: string
+                    description: Document address state
+                    example: selangor
+                  country:
+                    type: string
+                    description: Document address country
+                    example: MYS
+                  gender:
+                    type: string
+                    description: Document gender
+                    example: M
+                  nationality:
+                    type: string
+                    description: Document nationality
+                    example: MY
+                  date_of_birth:
+                    type: string
+                    description: Document date of birth
+                    example: yyyy-MM-dd
               result:
                 type: object
                 description: Dynamic full result details of the response
