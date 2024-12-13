@@ -643,7 +643,6 @@ paths:
                   example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
                 app_properties:
                   description: Custom properties of the app
-                  type: object
                   $ref: "#/components/schemas/AppProperty"
                   example:
                     onfido_webhook_url: "http://rdi-onfido/internal/query"
@@ -1607,7 +1606,6 @@ components:
           example: api_sandbox.57u0VjSqlPh.9yyhfdGevnANkRbLxBzufrSlEz6xTO8t
         app_properties:
           description: Custom properties of the app
-          type: object
           $ref: "#/components/schemas/AppProperty"
           example:
             onfido_webhook_url: "http://rdi-onfido/internal/query"
