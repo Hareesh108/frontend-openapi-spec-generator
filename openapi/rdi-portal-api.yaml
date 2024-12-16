@@ -1791,9 +1791,12 @@ paths:
                 decision:
                   type: string
                   enum:
-                    - APPROVE
-                    - REJECT
-                  description: 'Decision for the review, either APPROVE or REJECT.'
+                    - APPROVED
+                    - DECLINED
+                    - BLOCKED
+                  description: >-
+                    Decision for the review, either APPROVED, BLOCKED or
+                    DECLINED.
                 reason:
                   type: string
                   description: Reason for the decision.
@@ -2781,6 +2784,7 @@ components:
             - DECLINED
             - ERROR
             - EXPIRED
+            - BLOCKED
           example: APPROVED
         customer_reference:
           type: string
@@ -2826,6 +2830,7 @@ components:
             - DECLINED
             - ERROR
             - EXPIRED
+            - BLOCKED
           example: APPROVED
         customer_reference:
           type: string

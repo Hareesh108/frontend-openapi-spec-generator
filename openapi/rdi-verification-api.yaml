@@ -198,6 +198,7 @@ components:
             - DECLINED
             - ERROR
             - EXPIRED
+            - BLOCKED
           example: PENDING
         reasons:
           type: array
@@ -251,6 +252,7 @@ components:
             - DECLINED
             - ERROR
             - EXPIRED
+            - BLOCKED
           example: AWAITING_INPUT
         reasons:
           type: array
@@ -276,7 +278,7 @@ components:
           description: Summary of the verification request details
         results:
           type: object
-          description: Results, populated when status is REVIEW, APPROVED, or DECLINED
+          description: Results, populated when status is BLOCKED, APPROVED, or DECLINED
         profile:
           type: object
           description: Profile of the applicant
