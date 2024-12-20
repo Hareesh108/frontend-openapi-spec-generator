@@ -112,6 +112,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/verifications/{request_reference}/files:
+    get:
+      summary: List all files of a request
+      description: List all files associated with a specific request execution.
+      operationId: listRequestFiles
+      tags:
+        - Verification
+      parameters:
+        - in: header
+          name: X-API-KEY
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: request_reference
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the verification request
+          example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+      responses:
+        '200':
+          description: List of files retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VerificationRequestFileDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/verifications/{request_reference}/download:
     post:
       summary: Download a document
@@ -394,3 +429,30 @@ components:
           format: date-time
           description: Timestamp when the result response returned
           example: '2022-06-28T15:39:42Z'
+    VerificationRequestFileDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        category:
+          type: string
+          description: Category of the file
+          example: ID
+        sub_category:
+          type: string
+          description: Subcategory of the file
+          example: FRONT
+        file_name:
+          type: string
+          description: The name of the file
+          example: file1.png
+        file_type:
+          type: string
+          description: The type of the file (e.g., png, jpg)
+          example: png
+        file_size:
+          type: integer
+          description: The size of the file
+          example: 88888
