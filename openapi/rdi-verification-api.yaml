@@ -147,32 +147,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/v1/verifications/{request_reference}/download:
+  /api/v1/verifications/{request_reference}/files/{file_id}/download:
     post:
-      summary: Download a document
-      description: |
-        Downloads a document associated with the verification request using the provided service and object's value ID.
-      operationId: downloadDocument
+      summary: Download file of a request
+      description: Download file associated with the request.
+      operationId: downloadRequestFile
       tags:
         - Verification
       parameters:
+        - in: header
+          name: X-API-KEY
+          required: true
+          schema:
+            type: string
         - in: path
           name: request_reference
           required: true
           schema:
             type: string
-          description: Unique reference of the verification request
-          example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
-      requestBody:
-        description: Payload to download a document
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DocumentDownloadRequest'
+          description: Unique identifier of the verification request
+          example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+        - in: path
+          name: file_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the file
+          example: dd43ee6b-d90e-41b8-bb9b-385529d591fd
       responses:
         '200':
-          description: Document downloaded successfully
+          description: File downloaded successfully
           content:
             application/octet-stream:
               schema:
@@ -398,21 +402,6 @@ components:
               type: string
               description: Document date of birth
               example: yyyy-MM-dd
-          
-    DocumentDownloadRequest:
-      type: object
-      required:
-        - app
-        - value_id
-      properties:
-        app:
-          type: string
-          description: Name of the app for the document
-          example: ONFIDO
-        value_id:
-          type: string
-          description: Unique identifier for the object to be downloaded
-          example: '123'
     ErrorResponse:
       type: object
       properties:
