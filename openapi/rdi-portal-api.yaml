@@ -1764,7 +1764,16 @@ paths:
       operationId: reviewRequestExecution
       tags:
         - Request
+      security:
+        - bearerAuth: []
       parameters:
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
         - name: request_id
           in: path
           required: true
@@ -1792,7 +1801,7 @@ paths:
                   type: string
                   enum:
                     - APPROVED
-                    - DECLINED
+                    - REJECTED
                     - BLOCKED
                   description: >-
                     Decision for the review, either APPROVED, BLOCKED or
@@ -1820,6 +1829,180 @@ paths:
                 $ref: '#/components/schemas/GlobalErrorResponseDto1'
         '500':
           description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+  '/api/v1/requests/{request_id}/events':
+    post:
+      summary: save events and attachments for requests.
+      operationId: saveRequestEvents
+      tags:
+        - Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - notes
+              properties:
+                notes:
+                  type: string
+                  description: Notes or additional information about the event.
+                attachment:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: List of optional file attachments related to the event.
+      responses:
+        '201':
+          description: Request event created successfully.
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto1'
+    get:
+      summary: Request events listing
+      description: Get the list of events associated with a request
+      operationId: listRequestEvents
+      tags:
+        - Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request
+          example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: >-
+            Format is:
+
+            ```json
+
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+
+            ```
+
+
+            **Where:**
+
+            - **filterFieldName**: The field to filter by. Possible values
+            include:
+              - `id`
+              - `request_type`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by request type
+              value: '[{ "request_type": { "op": "eq","values": [ "ADD_COMMENT" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'org_name,desc'
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `request_type`
+              - `created_at`
+              - `updated_at`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+      responses:
+        '200':
+          description: A list of request with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestEventPaginatedResponse'
+        '400':
+          description: Internal server error
           content:
             application/json:
               schema:
@@ -3036,6 +3219,85 @@ components:
           type: string
           description: The endpoint path where the error occurred
           example: /v1/requests
+    RequestEventPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestEventDto'
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+    RequestEventDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the created request event.
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-02-01T12:34:56Z'
+        created_by:
+          type: string
+          description: Name of the user that created this event
+          example: Foo
+        updated_by:
+          type: string
+          description: Name of the user that last updated this event
+          example: Foo
+        request_id:
+          type: string
+          description: The ID of the associated request.
+        request_type:
+          type: string
+          description: Type/category of the request event.
+          enum:
+            - ADD_COMMENT
+            - REVIEW_REQUEST
+          example: ADD_COMMENT
+        notes:
+          type: string
+          description: Notes about the request event.
+        description:
+          type: string
+          description: Detailed description of the request event.
+        has_attachment:
+          type: boolean
+          description: Indicates if an attachment is included.
+        metadata:
+          type: object
+          description: Additional metadata stored as JSON.
+        request_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestFileDto'
     ReasonPaginatedResponse:
       type: object
       properties:
