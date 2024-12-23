@@ -148,7 +148,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/v1/verifications/{request_reference}/files/{file_id}/download:
-    post:
+    get:
       summary: Download file of a request
       description: Download file associated with the request.
       operationId: downloadRequestFile
