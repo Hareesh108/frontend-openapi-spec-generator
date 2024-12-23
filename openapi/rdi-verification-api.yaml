@@ -329,7 +329,7 @@ components:
             id_number:
               type: string
               description: Document id number
-              example: 660320101988
+              example: "660320101988"
             issuing_country:
               type: string
               description: Document issuing country
@@ -377,7 +377,7 @@ components:
             postcode:
               type: string
               description: Document address postal code
-              example: 88888
+              example: "88888"
             city:
               type: string
               description: Document address city
