@@ -238,7 +238,7 @@ components:
             - ERROR
             - EXPIRED
             - BLOCKED
-          example: PENDING
+          example: PROCESSING
         reasons:
           type: array
           items:
