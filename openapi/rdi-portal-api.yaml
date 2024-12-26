@@ -3135,6 +3135,73 @@ components:
                     type: string
                     description: Document date of birth
                     example: yyyy-MM-dd
+              summary_result:
+                type: object
+                description: Summary of validation checks
+                properties:
+                  id_document:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Validation check label
+                          example: Usability
+                        status:
+                          type: string
+                          description: Validation check status
+                          example: PASSED
+                        value:
+                          type: string
+                          description: Additional details about the check
+                          example: REPEATED_FACE
+                  selfie_Credential:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Validation check label
+                          example: Usability
+                        status:
+                          type: string
+                          description: Validation check status
+                          example: PASSED
+                  facemap:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Validation check label
+                          example: Usability
+                        status:
+                          type: string
+                          description: Validation check status
+                          example: PASSED
+                  others:
+                    type: object
+                    properties:
+                      risk_score:
+                        type: integer
+                        description: Risk score associated with the check
+                        example: 50
+                      similarity_score:
+                        type: number
+                        format: double
+                        description: Similarity score
+                        example: 0.8
+                      predicted_age:
+                        type: integer
+                        description: Predicted age
+                        example: 30
+                      age_confidence_range:
+                        type: string
+                        description: Confidence range for the predicted age
+                        example: 17-43
               result:
                 type: object
                 description: Dynamic full result details of the response
