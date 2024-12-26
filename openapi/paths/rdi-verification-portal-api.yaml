@@ -232,8 +232,8 @@ paths:
                   type: string
                   enum:
                     - APPROVED
-                    - REJECTED
                     - BLOCKED
+                    - DECLINED
                   description: Decision for the review, either APPROVED, BLOCKED or DECLINED.
                 reason:
                   type: string
