@@ -325,6 +325,14 @@ components:
             type:
               type: string
               description: Ekyc card type
+              enum:
+                - NATIONAL_ID
+                - RESIDENCE_PERMIT
+                - MILITARY_ID
+                - PASSPORT
+                - DRIVING_LICENSE
+                - UNSUPPORTED
+                - OTHERS
               example: NATIONAL_ID
             id_number:
               type: string
