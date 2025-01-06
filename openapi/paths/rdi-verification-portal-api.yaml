@@ -850,6 +850,332 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/purposes:
+    get:
+      summary: Retrieve a list of purposes
+      description: Get a list of all purposes.
+      operationId: listPurposes
+      tags:
+        - Purpose
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name: channelId
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
+
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `workflow_id`
+              - `attempt_counts`
+              - `channel_id`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by purpose name
+              value: '[{ "name": { "op": "like", "values": [ "QSA_NEW_APPLICATION" ] } }]'
+            example2:
+              summary: Filter by workflow ID
+              value: '[{ "workflow_id": { "op": "eq", "values": [ "12345" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "name,asc"
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `name`
+              - `description`
+              - `workflow_id`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+
+      responses:
+        '200':
+          description: A list of purposes with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposePaginatedResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Create a new purpose
+      description: Create a new purpose with the provided details.
+      operationId: createPurpose
+      tags:
+        - Purpose
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name: channelId
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the purpose
+                  example: QSA_NEW_APPLICATION
+                description:
+                  type: string
+                  description: A detailed description of the purpose
+                  example: "Verify user identity during onboarding"
+                workflow_id:
+                  type: string
+                  description: ID of the workflow associated with this purpose
+                  example: "workflow_12345"
+                attempt_counts:
+                  type: integer
+                  description: Number of attempts made for this purpose
+                  example: 3
+              required:
+                - name
+                - channelId
+      responses:
+        '201':
+          description: Purpose created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+  /api/v1/purposes/{id}:
+    get:
+      summary: Retrieve a purpose by ID
+      description: Get details of a specific purpose.
+      operationId: getPurpose
+      tags:
+        - Purpose
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the purpose
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - in: header
+          name: channelId
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      responses:
+        '200':
+          description: Purpose details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    put:
+      summary: Update an existing purpose
+      description: Update the details of a specific purpose.
+      operationId: updatePurpose
+      tags:
+        - Purpose
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the purpose
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - in: header
+          name: channelId
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the purpose
+                  example: QSA_NEW_APPLICATION
+                description:
+                  type: string
+                  description: A detailed description of the purpose
+                  example: "Verify user identity during onboarding"
+                workflow_id:
+                  type: string
+                  description: ID of the workflow associated with this purpose
+                  example: "workflow_12345"
+                attempt_counts:
+                  type: integer
+                  description: Number of attempts made for this purpose
+                  example: 3
+      responses:
+        '200':
+          description: Purpose updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    delete:
+      summary: Delete a purpose
+      description: Delete a specific purpose.
+      operationId: deletePurpose
+      tags:
+        - Purpose
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the purpose
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: header
+          name: channelId
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      responses:
+        '200':
+          description: Purpose deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
 
 components:
   securitySchemes:
@@ -904,6 +1230,18 @@ components:
         channel_name:
           type: string
           example: name for the client
+        purpose:
+          type: string
+          description: Purpose of the request
+          example: QSA_NEW_APPLICATION
+        attempt_used:
+          type: int
+          description: Number of attempts used for respective request.
+          example: 1
+        attempt_left:
+          type: int
+          description: Number of attempts left for respective request.
+          example: 2
 
     RequestDetailDto:
       type: object
@@ -1168,6 +1506,18 @@ components:
         channel_name:
           type: string
           example: name for the client
+        purpose:
+          type: string
+          description: Purpose of the request
+          example: QSA_NEW_APPLICATION
+        attempt_used:
+          type: int
+          description: Number of attempts used for respective request.
+          example: 1
+        attempt_left:
+          type: int
+          description: Number of attempts left for respective request.
+          example: 2
 
     RequestPaginatedResponse:
       type: object
@@ -1408,3 +1758,78 @@ components:
           type: string
           description: The path to the file
           example: /jumio/ID/FRONT/file1.png
+    PurposePaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PurposeDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false
+
+    PurposeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the purpose
+          example: c2d35161-b8a9-47c8-88d2-7f6fcd29c561
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this event
+          example: Foo
+        updated_by:
+          type: string
+          description: Name of the user that last updated this event
+          example: Foo
+        name:
+          type: string
+          description: The name of the purpose
+          example: "QSA_NEW_APPLICATION"
+        description:
+          type: string
+          description: A detailed description of the purpose
+          example: "Verify user identity during onboarding"
+        workflow_id:
+          type: string
+          description: ID of the workflow associated with this purpose
+          example: "workflow_12345"
+        attempt_counts:
+          type: integer
+          description: Number of attempts made for this purpose
+          example: 3
+        channel_id:
+          type: string
+          description: ID of the channel associated with this purpose
+          example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532

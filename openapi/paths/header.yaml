@@ -52,6 +52,7 @@ x-tagGroups:
       - Profile
       - Request
       - Reason
+      - Purpose
   - name: Common
     tags:
       - Configuration
