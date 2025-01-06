@@ -195,6 +195,7 @@ components:
       required:
         - app
         - customer_internal_reference
+        - purpose
       properties:
         app:
           type: string
@@ -204,13 +205,13 @@ components:
           type: string
           description: Channel customer ID
           example: f60a954e-fe14-4918-abbf-6d48ca71996c
+        purpose:
+          type: string
+          description: Purpose of the request
+          example: "QSA_NEW_APPLICATION"
         metadata:
           type: object
           properties:
-            workflow_id:
-              type: string
-              description: Workflow ID (mandatory for ONFIDO)
-              example: 1bda3d54-3527-4090-b341-429333d23896
             applicant_id:
               type: string
               description: If populated, will skip applicant creation
@@ -302,6 +303,10 @@ components:
           type: string
           description: Unique reference of the verification request
           example: 3993afe2-e4f1-4087-ab34-27edcac98ab0
+        attempt_left:
+          type: integer
+          description: Number of attempts left for this request
+          example: 3
         created_at:
           type: string
           format: date-time
@@ -312,9 +317,9 @@ components:
           format: date-time
           description: Timestamp when the request was last updated
           example: '2022-07-28T15:40:42Z'
-        summary:
+        metadata:
           type: object
-          description: Summary of the verification request details
+          description: Metadata of the verification request details
         results:
           type: object
           description: Results, populated when status is BLOCKED, APPROVED, or DECLINED
