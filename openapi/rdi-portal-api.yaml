@@ -2579,6 +2579,10 @@ paths:
                   type: string
                   description: The name of the purpose
                   example: QSA_NEW_APPLICATION
+                app:
+                  type: string
+                  description: The application associated with the purpose
+                  example: ONFIDO
                 description:
                   type: string
                   description: A detailed description of the purpose
@@ -2593,7 +2597,7 @@ paths:
                   example: 3
               required:
                 - name
-                - channelId
+                - app
       responses:
         '201':
           description: Purpose created successfully
@@ -2689,6 +2693,10 @@ paths:
                   type: string
                   description: The name of the purpose
                   example: QSA_NEW_APPLICATION
+                app:
+                  type: string
+                  description: The application associated with the purpose
+                  example: ONFIDO
                 description:
                   type: string
                   description: A detailed description of the purpose
@@ -3897,6 +3905,10 @@ components:
           type: string
           description: The name of the purpose
           example: QSA_NEW_APPLICATION
+        app:
+          type: string
+          description: The application associated with the purpose
+          example: ONFIDO
         description:
           type: string
           description: A detailed description of the purpose
