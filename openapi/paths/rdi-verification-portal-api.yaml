@@ -861,7 +861,7 @@ paths:
         - bearerAuth: [ ]
       parameters:
         - in: header
-          name: channelId
+          name: channelid
           required: true
           schema:
             type: string
@@ -980,7 +980,7 @@ paths:
         - bearerAuth: [ ]
       parameters:
         - in: header
-          name: channelId
+          name: channelid
           required: true
           schema:
             type: string
@@ -1053,7 +1053,7 @@ paths:
           description: Unique identifier of the purpose
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: channelId
+          name: channelid
           required: true
           schema:
             type: string
@@ -1095,7 +1095,7 @@ paths:
           description: Unique identifier of the purpose
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
-          name: channelId
+          name: channelid
           required: true
           schema:
             type: string
@@ -1163,7 +1163,7 @@ paths:
           description: Unique identifier of the purpose
           example: "123e4567-e89b-12d3-a456-426614174000"
         - in: header
-          name: channelId
+          name: channelid
           required: true
           schema:
             type: string
@@ -1184,7 +1184,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
-
+  /api/v1/requests/{request_id}/executions/{execution_id}/profiles:
+    put:
+      summary: Update profile for request execution
+      description: |
+        Updates the profile details of an applicant associated with a specific request execution. This can include changes to name, address, or other profile-related fields. The execution record is determined by `requestId`, `executionId`, and `channelId`.
+      operationId: updateProfile
+      tags:
+        - Request
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the verification request
+          example: 3993afe2-e4f1-4087-ab34-27edcac98ab0
+        - in: path
+          name: execution_id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the request execution
+          example: a1b2c3d4-e5f6-7890-ghij-klmnopqrstuv
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the channel
+          example: portal-web
+      requestBody:
+        description: Payload containing updated profile details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDto'
+      responses:
+        '200':
+          description: Profile updated successfully (No Content)
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
 components:
   securitySchemes:
     bearerAuth:
@@ -1320,97 +1367,9 @@ components:
                 type: object
                 description: Dynamic basic result details of the response
               profile:
-                type: object
-                description: Dynamic profile result details of the response
-                properties:
-                  type:
-                    type: string
-                    description: Ekyc card type
-                    enum:
-                      - NATIONAL_ID
-                      - RESIDENCE_PERMIT
-                      - MILITARY_ID
-                      - PASSPORT
-                      - DRIVING_LICENSE
-                      - UNSUPPORTED
-                      - OTHERS
-                    example: NATIONAL_ID
-                  id_number:
-                    type: string
-                    description: Document id number
-                    example: 660320101988
-                  issuing_country:
-                    type: string
-                    description: Document issuing country
-                    example: MYS
-                  full_name:
-                    type: string
-                    description: Document full name
-                    example: Alexandra Avando
-                  first_name:
-                    type: string
-                    description: Document first name
-                    example: Avando
-                  middle_name:
-                    type: string
-                    description: Document middle name
-                    example: Alexandra
-                  last_name:
-                    type: string
-                    description: Document last name
-                    example: Alexandra
-                  full_address:
-                    type: string
-                    description: Document full address
-                    example: 88, jalan gembira, taman bahagia, 88888, selangor.
-                  address_line_1:
-                    type: string
-                    description: Document address line 1
-                    example: 88, jalan gembira
-                  address_line_2:
-                    type: string
-                    description: Document address line 2
-                    example: taman bahagia
-                  address_line_3:
-                    type: string
-                    description: Document address line 3
-                    example: 88888, selangor
-                  address_line_4:
-                    type: string
-                    description: Document address line 4
-                    example: t88888, selangor
-                  address_line_5:
-                    type: string
-                    description: Document address line 5
-                    example: 88888, selangor
-                  postcode:
-                    type: string
-                    description: Document address postal code
-                    example: 88888
-                  city:
-                    type: string
-                    description: Document address city
-                    example: Klang
-                  state:
-                    type: string
-                    description: Document address state
-                    example: selangor
-                  country:
-                    type: string
-                    description: Document address country
-                    example: MYS
-                  gender:
-                    type: string
-                    description: Document gender
-                    example: M
-                  nationality:
-                    type: string
-                    description: Document nationality
-                    example: MY
-                  date_of_birth:
-                    type: string
-                    description: Document date of birth
-                    example: yyyy-MM-dd
+                $ref: '#/components/schemas/ProfileDto'
+              original_profile:
+                $ref: '#/components/schemas/ProfileDto'
               summary_result:
                 type: object
                 description: Summary of validation checks
@@ -1639,6 +1598,7 @@ components:
           enum:
             - ADD_COMMENT
             - REVIEW_REQUEST
+            - EDIT_REQUEST
           example: ADD_COMMENT
         notes:
           type: string
@@ -1845,3 +1805,95 @@ components:
           type: string
           description: ID of the channel associated with this purpose
           example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532
+    ProfileDto:
+      type: object
+      description: Dynamic profile result details of the response
+      properties:
+        type:
+          type: string
+          description: Ekyc card type
+          enum:
+            - NATIONAL_ID
+            - RESIDENCE_PERMIT
+            - MILITARY_ID
+            - PASSPORT
+            - DRIVING_LICENSE
+            - UNSUPPORTED
+            - OTHERS
+          example: NATIONAL_ID
+        id_number:
+          type: string
+          description: Document id number
+          example: 660320101988
+        issuing_country:
+          type: string
+          description: Document issuing country
+          example: MYS
+        full_name:
+          type: string
+          description: Document full name
+          example: Alexandra Avando
+        first_name:
+          type: string
+          description: Document first name
+          example: Avando
+        middle_name:
+          type: string
+          description: Document middle name
+          example: Alexandra
+        last_name:
+          type: string
+          description: Document last name
+          example: Alexandra
+        full_address:
+          type: string
+          description: Document full address
+          example: 88, jalan gembira, taman bahagia, 88888, selangor.
+        address_line_1:
+          type: string
+          description: Document address line 1
+          example: 88, jalan gembira
+        address_line_2:
+          type: string
+          description: Document address line 2
+          example: taman bahagia
+        address_line_3:
+          type: string
+          description: Document address line 3
+          example: 88888, selangor
+        address_line_4:
+          type: string
+          description: Document address line 4
+          example: t88888, selangor
+        address_line_5:
+          type: string
+          description: Document address line 5
+          example: 88888, selangor
+        postcode:
+          type: string
+          description: Document address postal code
+          example: 88888
+        city:
+          type: string
+          description: Document address city
+          example: Klang
+        state:
+          type: string
+          description: Document address state
+          example: selangor
+        country:
+          type: string
+          description: Document address country
+          example: MYS
+        gender:
+          type: string
+          description: Document gender
+          example: M
+        nationality:
+          type: string
+          description: Document nationality
+          example: MY
+        date_of_birth:
+          type: string
+          description: Document date of birth
+          example: yyyy-MM-dd
