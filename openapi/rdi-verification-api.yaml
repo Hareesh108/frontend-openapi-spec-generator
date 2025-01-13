@@ -188,6 +188,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/verifications/{request_reference}/attempts:
+    post:
+      summary: Re-attempt a verification request
+      description: Re-attempt a previously failed or incomplete verification request.
+      operationId: reattemptVerificationRequest
+      tags:
+        - Verification
+      parameters:
+        - in: header
+          name: X-API-KEY
+          required: true
+          schema:
+            type: string
+          description: API key for authentication.
+        - in: path
+          name: request_reference
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the verification request.
+          example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
+      responses:
+        '201':
+          description: Verification request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     VerificationRequest:
