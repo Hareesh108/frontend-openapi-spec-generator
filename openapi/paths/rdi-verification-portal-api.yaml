@@ -247,6 +247,9 @@ paths:
                     type: string
                     format: binary
                     description: List of attachment files.
+                reset_attempts:
+                  type: boolean
+                  description: Flag to reset the attempt counts
       responses:
         '200':
           description: Review submitted successfully.
@@ -1232,6 +1235,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1290,11 +1295,11 @@ components:
           description: Purpose of the request
           example: QSA_NEW_APPLICATION
         attempt_used:
-          type: int
+          type: integer
           description: Number of attempts used for respective request.
           example: 1
         attempt_left:
-          type: int
+          type: integer
           description: Number of attempts left for respective request.
           example: 2
 
@@ -1478,11 +1483,11 @@ components:
           description: Purpose of the request
           example: QSA_NEW_APPLICATION
         attempt_used:
-          type: int
+          type: integer
           description: Number of attempts used for respective request.
           example: 1
         attempt_left:
-          type: int
+          type: integer
           description: Number of attempts left for respective request.
           example: 2
 
