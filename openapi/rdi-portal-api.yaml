@@ -3329,6 +3329,11 @@ components:
             The maximum review threshold for risk scores in Jumio. A score above
             this threshold but below the approval threshold will lead to a
             review status.
+        channel_webhook_url:
+          type: string
+          format: uri
+          description: |
+            The URL for receiving webhook notifications from Channel.
     RequestDto:
       type: object
       properties:
