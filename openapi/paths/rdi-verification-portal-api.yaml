@@ -1242,7 +1242,7 @@ paths:
       description: Get list of a available id-types.
       operationId: listIdTypes
       tags:
-        - Request
+        - Configuration
       security:
         - bearerAuth: []
       parameters:
