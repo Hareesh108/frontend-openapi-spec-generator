@@ -210,8 +210,8 @@ paths:
           description: Unique reference of the verification request.
           example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
       responses:
-        '201':
-          description: Verification request created successfully
+        '200':
+          description: Verification request attempted successfully
           content:
             application/json:
               schema:
@@ -277,7 +277,7 @@ components:
         reasons:
           type: array
           items:
-            type: String
+            type: string
           description : List of reasons for declined status
           example: SIMILARITY_SCORE_BELOW_THRESHOLD
         created_at:
@@ -331,7 +331,7 @@ components:
         reasons:
           type: array
           items:
-            type: String
+            type: string
           description: List of reasons for declined status
         request_reference:
           type: string
