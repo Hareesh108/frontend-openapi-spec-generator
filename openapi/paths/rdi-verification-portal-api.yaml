@@ -1235,6 +1235,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+                
+  /api/v1/id-types:
+    get:
+      summary: Retrieve list of id-types
+      description: Get list of a available id-types.
+      operationId: listIdTypes
+      tags:
+        - Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: channelid
+          required: true
+          schema:
+            type: string
+          description: The channel ID
+          example: a3937b4a-13f7-440b-87a4-8771d4a919a2
+      responses:
+        '200':
+          description: Id types retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdTypeDto'
+        '400':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
 
 
 components:
@@ -1902,3 +1933,17 @@ components:
           type: string
           description: Document date of birth
           example: yyyy-MM-dd
+
+    IdTypeDto:
+      type: array
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            description: The unique identifier for the ID type
+            example: NATIONAL_ID
+          label:
+            type: string
+            description: Label for the ID type
+            example: National ID
