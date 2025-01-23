@@ -2332,10 +2332,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto1'
-  '/api/v1/requests/{request_id}/files':
+  '/api/v1/requests/{request_id}/executions/{execution_id}/files':
     get:
-      summary: List all files of the request
-      description: List all files of the request.
+      summary: List all files of the request execution
+      description: List all files of the request execution.
       operationId: listRequestFiles
       tags:
         - Request
@@ -2349,6 +2349,13 @@ paths:
             type: string
           description: Unique reference of the request
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
+        - in: path
+          name: execution_id
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the request execution
+          example: 55d2c47f-ab3c-4e74-a0e4-165d0495b5b2
         - in: header
           name: channelid
           required: true
