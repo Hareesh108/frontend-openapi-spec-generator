@@ -3475,6 +3475,9 @@ components:
           type: string
           description: Request belong to which channel
           example: 6722406b-e823-40a0-b691-ea187a1e364d
+        workflow_id:
+          type: string
+          description: Request Workflow Id
         request_executions:
           type: array
           description: Request execution details
