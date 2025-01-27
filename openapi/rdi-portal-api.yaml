@@ -2904,7 +2904,6 @@ paths:
               - `postcode`
               - `state_code`
               - `state_name`
-              - `channel_id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
