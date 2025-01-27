@@ -37,6 +37,8 @@ tags:
     description: The API allows you to view and manage accounts.
   - name: Channel
     description: The API allows you to view and manage channels.
+  - name: Postcode
+    description: The API allows you to view and manage postcodes.
 x-tagGroups:
   - name: Authentication
     tags:
@@ -53,6 +55,7 @@ x-tagGroups:
       - Request
       - Reason
       - Purpose
+      - Postcode
   - name: Common
     tags:
       - Configuration

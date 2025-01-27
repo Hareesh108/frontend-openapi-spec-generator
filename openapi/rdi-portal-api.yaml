@@ -40,6 +40,8 @@ tags:
     description: The API allows you to view and manage accounts.
   - name: Channel
     description: The API allows you to view and manage channels.
+  - name: Postcode
+    description: The API allows you to view and manage postcodes.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
     post:
@@ -4404,6 +4406,7 @@ x-tagGroups:
       - Request
       - Reason
       - Purpose
+      - Postcode
   - name: Common
     tags:
       - Configuration
