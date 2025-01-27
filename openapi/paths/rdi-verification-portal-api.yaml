@@ -1273,7 +1273,283 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
+                
+  /api/v1/postcodes:
+    get:
+      summary: Retrieve a list of postcodes
+      description: Get a list of all postcodes.
+      operationId: listPostcodes
+      tags:
+        - Postcode
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name: channelid
+          required: false
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: |-
+            Format is:
+            ```
+            [
+              {
+                "filterFieldName": {
+                  "op": "operator",
+                  "values": ["value"]
+                }
+              }
+            ]
+            ```
 
+            **Where:**
+            - **filterFieldName**: The field to filter by. Possible values include:
+              - `postcode`
+              - `state_code`
+              - `state_name`
+              - `channel_id`
+
+            - **operator**: The operation to perform. Possible options are:
+              - `eq`: Equals
+              - `!eq`: Not equal
+              - `in`: In
+              - `!in`: Not in
+              - `like`: Like
+              - `!like`: Not like
+              - `gt`: Greater than
+              - `gte`: Greater than or equal to
+              - `lt`: Less than
+              - `lte`: Less than or equal to
+              - `btw`: Between
+              - `!btw`: Not between
+
+            - **value**: The value(s) used for filtering.
+              - If the operator supports multiple values (e.g., `in`, `!in`, `btw`, `!btw`), this should be an array of values.
+              - For operators that expect a single value (e.g., `eq`, `!eq`, `like`, `!like`, `gt`, `gte`, `lt`, `lte`), provide a single value in the array.
+              - Accepted types for values include strings, numbers, or dates (in ISO 8601 format), depending on the field being filtered.
+          examples:
+            example1:
+              summary: Filter by postcode 
+              value: '[{ "postcode": { "op": "like", "values": [ "55100" ] } }]'
+            example2:
+              summary: Filter by state name
+              value: '[{ "state_name": { "op": "eq", "values": [ "Kuala Lumpur" ] } }]'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: The page number to retrieve (0-based)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to retrieve per page
+        - in: query
+          name: sort
+          schema:
+            type: array
+            items:
+              type: string
+              example: "name,asc"
+          description: |-
+            Format is `sortFieldName,direction`.
+
+            **Where:**
+            - **sortFieldName**: The field to sort by. Possible values include:
+              - `id`
+              - `postcode`
+              - `state_name`
+              - `state_code`
+
+            - **direction**: The sorting order. Possible values are:
+              - `asc`: Sort in ascending order
+              - `desc`: Sort in descending order
+
+      responses:
+        '200':
+          description: A list of postcodes with pagination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostcodePaginatedResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponseDto"
+    post:
+      summary: Create a new postcode
+      description: Create a new postcode with the provided details.
+      operationId: createPostcode
+      tags:
+        - Postcode
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name: channelid
+          required: false
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postcode:
+                  type: string
+                  description: The postcode value
+                  example: 55100
+                state_code:
+                  type: string
+                  description: The state code
+                  example: KUL
+                state_name:
+                  type: string
+                  description: The state name
+                  example: Kuala Lumpur
+              required:
+                - postcode
+                - state_code
+                - state_name
+      responses:
+        '201':
+          description: Postcode created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostcodeDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+                
+  /api/v1/postcodes/{id}:
+    put:
+      summary: Update an existing postcode
+      description: Update the details of a specific postcode.
+      operationId: updatePostcode
+      tags:
+        - Postcode
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the postcode
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - in: header
+          name: channelid
+          required: false
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postcode:
+                  type: string
+                  description: the postcode
+                  example: 55100
+                state_code:
+                  type: string
+                  description: The unique code for state
+                  example: KUL
+                state_name:
+                  type: string
+                  description: The state name
+                  example: Kuala Lumpur
+      responses:
+        '200':
+          description: Postcode updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostcodeDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+    delete:
+      summary: Delete a postcode
+      description: Delete a specific postcode.
+      operationId: deletePostcode
+      tags:
+        - Postcode
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the postcode
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - in: header
+          name: channelid
+          required: false
+          schema:
+            type: string
+          description: The channel ID
+          example: b8df469c-d78a-4cce-abb5-971c849198f1
+      responses:
+        '200':
+          description: Postcode deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalErrorResponseDto'
 
 components:
   securitySchemes:
@@ -1957,3 +2233,71 @@ components:
             type: string
             description: Label for the ID type
             example: National ID
+            
+    PostcodePaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostcodeDto"
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        total_elements:
+          type: integer
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        total_pages:
+          type: integer
+          example: 1
+        number_of_elements:
+          type: integer
+          example: 1
+        empty:
+          type: boolean
+          example: false            
+         
+    PostcodeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the postcode
+          example: c2d35161-b8a9-47c8-88d2-7f6fcd29c561
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-02-01T12:34:56Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-02-01T12:34:56Z"
+        created_by:
+          type: string
+          description: Name of the user that created this event
+          example: Foo
+        updated_by:
+          type: string
+          description: Name of the user that last updated this event
+          example: Foo
+        postcode:
+          type: string
+          description: The postcode
+          example: 55100
+        state_code:
+          type: string
+          description: The unique code for state
+          example: KUL
+        state_name:
+          type: string
+          description: The state name
+          example: Kuala Lumpur
