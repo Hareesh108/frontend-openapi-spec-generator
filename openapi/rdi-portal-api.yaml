@@ -40,8 +40,6 @@ tags:
     description: The API allows you to view and manage accounts.
   - name: Channel
     description: The API allows you to view and manage channels.
-  - name: Postcode
-    description: The API allows you to view and manage postcodes.
 paths:
   /auth/realms/rdi-portal/protocol/openid-connect/token:
     post:
@@ -2865,7 +2863,7 @@ paths:
       description: Get a list of all postcodes.
       operationId: listPostcodes
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: []
       parameters:
@@ -2986,7 +2984,7 @@ paths:
       description: Create a new postcode with the provided details.
       operationId: createPostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: []
       parameters:
@@ -3045,7 +3043,7 @@ paths:
       description: Update the details of a specific postcode.
       operationId: updatePostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: []
       parameters:
@@ -3105,7 +3103,7 @@ paths:
       description: Delete a specific postcode.
       operationId: deletePostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: []
       parameters:
@@ -4405,7 +4403,6 @@ x-tagGroups:
       - Request
       - Reason
       - Purpose
-      - Postcode
   - name: Common
     tags:
       - Configuration

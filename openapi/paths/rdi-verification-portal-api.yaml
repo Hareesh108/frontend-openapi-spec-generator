@@ -1280,7 +1280,7 @@ paths:
       description: Get a list of all postcodes.
       operationId: listPostcodes
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: [ ]
       parameters:
@@ -1396,7 +1396,7 @@ paths:
       description: Create a new postcode with the provided details.
       operationId: createPostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: [ ]
       parameters:
@@ -1456,7 +1456,7 @@ paths:
       description: Update the details of a specific postcode.
       operationId: updatePostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: [ ]
       parameters:
@@ -1516,7 +1516,7 @@ paths:
       description: Delete a specific postcode.
       operationId: deletePostcode
       tags:
-        - Postcode
+        - Configuration
       security:
         - bearerAuth: [ ]
       parameters:
