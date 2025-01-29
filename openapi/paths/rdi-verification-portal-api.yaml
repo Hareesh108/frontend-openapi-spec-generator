@@ -2218,6 +2218,10 @@ components:
           type: string
           description: Document date of birth
           example: yyyy-MM-dd
+        state_code:
+              type: string
+              description: Document address state code
+              example: SEL
 
     IdTypeDto:
       type: array
