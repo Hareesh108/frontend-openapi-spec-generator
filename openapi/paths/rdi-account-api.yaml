@@ -645,16 +645,15 @@ paths:
                   description: Custom properties of the app
                   $ref: "#/components/schemas/AppProperty"
                   example:
-                    onfido_webhook_url: "http://rdi-onfido/internal/query"
                     onfido_similarity_score_validation: "WORKFLOW"
                     onfido_similarity_score_min_threshold: 0.8
-                    jumio_webhook_url: "http://rdi-jumio/internal/query"
                     jumio_similarity_score_validation: "PLATFORM"
                     jumio_similarity_score_min_approve_threshold: 0.7
                     jumio_similarity_score_min_review_threshold: 0.5
                     jumio_risk_score_validate: true
                     jumio_risk_score_max_approve_threshold: 50
                     jumio_risk_score_max_review_threshold: 70
+                    channel_webhook_url: "https://channel.webhook.url.com"
       responses:
         "200":
           description: Channel app updated successfully
@@ -1608,16 +1607,15 @@ components:
           description: Custom properties of the app
           $ref: "#/components/schemas/AppProperty"
           example:
-            onfido_webhook_url: "http://rdi-onfido/internal/query"
             onfido_similarity_score_validation: "WORKFLOW"
             onfido_similarity_score_min_threshold: 0.8
-            jumio_webhook_url: "http://rdi-jumio/internal/query"
             jumio_similarity_score_validation: "PLATFORM"
             jumio_similarity_score_min_approve_threshold: 0.7
             jumio_similarity_score_min_review_threshold: 0.5
             jumio_risk_score_validate: true
             jumio_risk_score_max_approve_threshold: 50
             jumio_risk_score_max_review_threshold: 70
+            channel_webhook_url: "https://channel.webhook.url.com"
         app_label:
           type: string
           description: Label of the app
@@ -1884,12 +1882,8 @@ components:
         - confirm_password
     AppProperty:
       type: object
-      description: Custom properties for the app
+      description: Custom properties of the app
       properties:
-        onfido_webhook_url:
-          type: string
-          description: |
-            The URL for receiving webhook notifications from Onfido.
         onfido_similarity_score_validation:
           type: string
           enum:
@@ -1902,10 +1896,6 @@ components:
           type: number
           description: |
             The minimum similarity score required for a successful verification in Onfido.
-        jumio_webhook_url:
-          type: string
-          description: |
-            The URL for receiving webhook notifications from Jumio.
         jumio_similarity_score_validation:
           type: string
           enum:
