@@ -4002,6 +4002,7 @@ components:
             - ADD_COMMENT
             - REVIEW_REQUEST
             - EDIT_REQUEST
+            - CHANNEL_REVIEW_REQUEST
           example: ADD_COMMENT
         notes:
           type: string

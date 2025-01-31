@@ -222,6 +222,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/verifications/{request_reference}/reviews:
+    post:
+      summary: Review Verification Request
+      description: Request to review an APPROVED verification.
+      operationId: reviewRequest
+      tags:
+        - Verification
+      parameters:
+        - in: header
+          name: X-API-KEY
+          required: true
+          schema:
+            type: string
+          description: API key for authentication.
+        - in: path
+          name: request_reference
+          required: true
+          schema:
+            type: string
+          description: Unique reference of the verification request.
+          example: 96a998ba-195c-4e3b-b3f2-7850e64dd376
+      requestBody:
+        description: Payload to review a verification request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewVerificationRequest' 
+      responses:
+        '200':
+          description: Verification status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewVerificationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     VerificationRequest:
@@ -496,3 +543,18 @@ components:
           type: integer
           description: The size of the file
           example: 88888
+    ReviewVerificationRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+          description: Notes related to the review.
+        new_profile:
+          type: object
+          description: Updated profile details.
+    ReviewVerificationResponse:
+      type: object
+      properties:
+        request_reference:
+          type: string
+          description: Unique reference of the verification request.
