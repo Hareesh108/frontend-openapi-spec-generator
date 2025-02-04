@@ -1588,6 +1588,7 @@ components:
             - ERROR
             - EXPIRED
             - BLOCKED
+            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
@@ -1647,6 +1648,7 @@ components:
             - ERROR
             - EXPIRED
             - BLOCKED
+            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
