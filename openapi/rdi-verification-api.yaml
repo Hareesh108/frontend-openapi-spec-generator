@@ -315,6 +315,7 @@ components:
             - PROCESSING
             - AWAITING_INPUT
             - REVIEW
+            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
@@ -369,6 +370,7 @@ components:
             - PROCESSING
             - AWAITING_INPUT
             - REVIEW
+            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
