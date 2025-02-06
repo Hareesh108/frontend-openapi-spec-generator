@@ -1603,7 +1603,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -1738,7 +1738,7 @@ paths:
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -1768,7 +1768,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -1853,7 +1853,7 @@ paths:
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -1909,7 +1909,7 @@ paths:
           example: d6f7ab5f-43c6-433d-98cc-dd253acb21a3
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2021,7 +2021,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2209,7 +2209,7 @@ paths:
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2357,7 +2357,7 @@ paths:
           example: 55d2c47f-ab3c-4e74-a0e4-165d0495b5b2
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2409,7 +2409,7 @@ paths:
           example: dd43ee6b-d90e-41b8-bb9b-385529d591fd
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2446,7 +2446,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2645,7 +2645,7 @@ paths:
           example: 123e4567-e89b-12d3-a456-426614174000
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2805,7 +2805,7 @@ paths:
           example: a1b2c3d4-e5f6-7890-ghij-klmnopqrstuv
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: Unique identifier of the channel
@@ -2838,7 +2838,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
@@ -2901,6 +2901,7 @@ paths:
               - `postcode`
               - `state_code`
               - `state_name`
+              - `channel_id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -3669,12 +3670,12 @@ components:
             - AWAITING_INPUT
             - PROCESSING
             - REVIEW
-            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
             - EXPIRED
             - BLOCKED
+            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
@@ -3728,12 +3729,12 @@ components:
             - AWAITING_INPUT
             - PROCESSING
             - REVIEW
-            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
             - EXPIRED
             - BLOCKED
+            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
