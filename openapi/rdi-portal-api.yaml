@@ -3670,12 +3670,12 @@ components:
             - AWAITING_INPUT
             - PROCESSING
             - REVIEW
+            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
             - EXPIRED
             - BLOCKED
-            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
@@ -3729,12 +3729,12 @@ components:
             - AWAITING_INPUT
             - PROCESSING
             - REVIEW
+            - FLAGGED_FOR_REVIEW
             - APPROVED
             - DECLINED
             - ERROR
             - EXPIRED
             - BLOCKED
-            - FLAGGED_FOR_REVIEW
           example: APPROVED
         customer_reference:
           type: string
