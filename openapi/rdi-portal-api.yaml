@@ -1817,6 +1817,9 @@ paths:
                     type: string
                     format: binary
                     description: List of attachment files.
+                reset_attempts:
+                  type: boolean
+                  description: Flag to reset the attempt counts
       responses:
         '200':
           description: Review submitted successfully.
@@ -2790,18 +2793,6 @@ paths:
               required:
                 - decision
               properties:
-                decision:
-                  type: string
-                  enum:
-                    - APPROVED
-                    - BLOCKED
-                    - DECLINED
-                  description: >-
-                    Decision for the review, either APPROVED, BLOCKED or
-                    DECLINED.
-                reason:
-                  type: string
-                  description: Reason for the decision.
                 note:
                   type: string
                   description: Additional notes.
@@ -2811,9 +2802,6 @@ paths:
                     type: string
                     format: binary
                     description: List of attachment files.
-                reset_attempts:
-                  type: boolean
-                  description: Flag to reset the attempt counts
       responses:
         '200':
           description: Review submitted successfully.
