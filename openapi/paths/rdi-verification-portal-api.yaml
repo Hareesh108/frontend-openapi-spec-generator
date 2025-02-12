@@ -447,13 +447,6 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
         - in: query
           name: q
           schema:
@@ -563,14 +556,6 @@ paths:
         - Reason
       security:
         - bearerAuth: []
-      parameters:
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         required: true
         content:
@@ -630,13 +615,6 @@ paths:
             type: string
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Reason details retrieved successfully
@@ -672,13 +650,6 @@ paths:
             type: string
           description: Unique identifier of the reason
           example: 123e4567-e89b-12d3-a456-426614174000
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         content:
           application/json:
@@ -733,13 +704,6 @@ paths:
             type: string
           description: Unique identifier of the reason
           example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Reason deleted successfully
@@ -870,13 +834,6 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
         - in: query
           name: q
           schema:
@@ -901,7 +858,6 @@ paths:
               - `description`
               - `workflow_id`
               - `attempt_counts`
-              - `channel_id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -988,14 +944,6 @@ paths:
         - Purpose
       security:
         - bearerAuth: [ ]
-      parameters:
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         required: true
         content:
@@ -1062,13 +1010,6 @@ paths:
             type: string
           description: Unique identifier of the purpose
           example: 123e4567-e89b-12d3-a456-426614174000
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Purpose details retrieved successfully
@@ -1104,13 +1045,6 @@ paths:
             type: string
           description: Unique identifier of the purpose
           example: 123e4567-e89b-12d3-a456-426614174000
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         content:
           application/json:
@@ -1172,13 +1106,6 @@ paths:
             type: string
           description: Unique identifier of the purpose
           example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: channelid
-          required: true
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Purpose deleted successfully
@@ -1284,13 +1211,6 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
         - in: query
           name: q
           schema:
@@ -1313,7 +1233,6 @@ paths:
               - `postcode`
               - `state_code`
               - `state_name`
-              - `channel_id`
 
             - **operator**: The operation to perform. Possible options are:
               - `eq`: Equals
@@ -1400,14 +1319,6 @@ paths:
         - Configuration
       security:
         - bearerAuth: [ ]
-      parameters:
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         required: true
         content:
@@ -1468,13 +1379,6 @@ paths:
             type: string
           description: Unique identifier of the postcode
           example: 123e4567-e89b-12d3-a456-426614174000
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       requestBody:
         content:
           application/json:
@@ -1528,13 +1432,6 @@ paths:
             type: string
           description: Unique identifier of the postcode
           example: "123e4567-e89b-12d3-a456-426614174000"
-        - in: header
-          name: channelid
-          required: false
-          schema:
-            type: string
-          description: The channel ID
-          example: b8df469c-d78a-4cce-abb5-971c849198f1
       responses:
         '200':
           description: Postcode deleted successfully
@@ -1996,10 +1893,6 @@ components:
           type: string
           description: A detailed description of the reason
           example: Scam report on this account
-        channel_id:
-          type: string
-          description: Id of the organization
-          example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532
         app:
           type: string
           description: Application of the organization
@@ -2126,10 +2019,6 @@ components:
           type: integer
           description: Number of attempts made for this purpose
           example: 3
-        channel_id:
-          type: string
-          description: ID of the channel associated with this purpose
-          example: e2d76212-b8a9-63c8-69d2-7f6fcd42c532
     ProfileDto:
       type: object
       description: Dynamic profile result details of the response
