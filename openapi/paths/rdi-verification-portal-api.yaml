@@ -1179,7 +1179,7 @@ paths:
       parameters:
         - in: header
           name: channelid
-          required: true
+          required: false
           schema:
             type: string
           description: The channel ID
