@@ -1207,8 +1207,6 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              required:
-                - decision
               properties:
                 note:
                   type: string
