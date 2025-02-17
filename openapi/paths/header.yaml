@@ -46,13 +46,13 @@ x-tagGroups:
       - Channel
       - Account
       - Collaborator
+      - Purpose
+      - Reason
   - name: Channel User
     tags:
       - Collaboration
       - Profile
       - Request
-      - Reason
-      - Purpose
   - name: Common
     tags:
       - Configuration
