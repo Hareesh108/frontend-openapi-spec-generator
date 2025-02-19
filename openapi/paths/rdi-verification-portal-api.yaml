@@ -1941,7 +1941,6 @@ components:
             - CHANNEL_REVIEW_REQUEST
             - APPROVE_MAKER_CHECKER_REQUEST
             - DECLINE_MAKER_CHECKER_REQUEST
-            - CANCEL_MAKER_CHECKER_REQUEST
           example: ADD_COMMENT
         notes:
           type: string
