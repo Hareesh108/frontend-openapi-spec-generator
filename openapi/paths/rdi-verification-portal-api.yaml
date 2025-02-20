@@ -1224,7 +1224,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GlobalErrorResponseDto'
-
+            
   /api/v1/requests/{request_id}/executions/{execution_id}/decline-review:
     post:
       summary: Decline a review request
@@ -1606,6 +1606,13 @@ components:
             - EXPIRED
             - BLOCKED
           example: APPROVED
+        request_sub_status:
+          type: string
+          description: Sub-status of the request
+          enum:
+            - PENDING_APPROVAL
+            - ATTEMPT_EXHAUSTED
+          example: PENDING_APPROVAL
         customer_reference:
           type: string
           description: Unique identifier from channel request
@@ -1666,6 +1673,13 @@ components:
             - EXPIRED
             - BLOCKED
           example: APPROVED
+        request_sub_status:
+          type: string
+          description: Sub-status of the request
+          enum:
+            - PENDING_APPROVAL
+            - ATTEMPT_EXHAUSTED
+          example: PENDING_APPROVAL
         customer_reference:
           type: string
           description: Unique identifier from channel request
@@ -1797,6 +1811,32 @@ components:
                 type: string
                 description: Request belong to which workflow
                 example: "6722406b-e823-40a0-b691-ea187a1e364d"
+              request_sub_status:
+                type: string
+                description: Sub-status of the request
+                enum:
+                 - PENDING_APPROVAL
+                 - ATTEMPT_EXHAUSTED
+                example: PENDING_APPROVAL
+              manual_review:
+                type: boolean
+                default: false
+                description: "Indicates whether the request is manual reviewed or not."
+              flagged_for_review:
+                type: boolean
+                default: false
+                description: "Indicates whether the request has been flagged for review."
+              approval_metadata:
+                type: object
+                description: "Additional metadata related to the approval."
+              approval_requested_by:
+                type: string
+                description: "User who requested approval."
+              approval_requested_at:
+                type: string
+                format: date-time
+                description: "Timestamp when approval was requested."
+                example: "2024-02-20T12:34:56Z"
               request_execution_reasons:
                 type: array
                 description: Reason on failed request
