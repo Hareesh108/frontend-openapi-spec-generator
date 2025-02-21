@@ -43,7 +43,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-rd-back-office-api
+openapi/rd-back-office-api.yml
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
